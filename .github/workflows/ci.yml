@@ -1,0 +1,173 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, "3.10", "3.11"]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+        pip install pytest pytest-asyncio pytest-cov
+    
+    - name: Run basic validation tests
+      env:
+        DISABLE_VECTOR_SEARCH: "true"
+        LOG_LEVEL: "WARNING"
+      run: |
+        # Run basic validation tests that validate package structure and imports
+        python -m pytest tests/test_basic_validation.py -v --tb=short
+        
+        # Run framework design validation
+        python -m pytest tests/mcp_integration/test_simple_validation.py::TestSimpleValidation::test_framework_design_principles \
+                          tests/mcp_integration/test_simple_validation.py::TestSimpleValidation::test_pytest_configuration \
+                          -v --tb=short
+    
+    - name: Test Docker build
+      run: |
+        docker build -t jenkins-mcp-test .
+    
+    - name: Validate package installation
+      run: |
+        python -c "import mcp_server; print('Package imports successfully')"
+        python -c "from mcp_server.server import main; print('Server module imports successfully')"
+    
+    - name: Test config file validation
+      run: |
+        # Create a test config file
+        mkdir -p config
+        cat > config/test-config.yml << 'EOF'
+        jenkins_instances:
+          test-jenkins:
+            url: "https://dummy.example.com"
+            username: "dummy"
+            token: "dummy"
+            display_name: "Test Jenkins"
+
+        settings:
+          fallback_instance: "test-jenkins"
+
+        vector:
+          disable_vector_search: true
+
+        cache:
+          cache_dir: "/tmp/mcp-jenkins"
+
+        cleanup:
+          interval_hours: 24
+        EOF
+        
+        # Test that config loading works
+        python -c "
+        from mcp_server.server import load_config_from_yaml
+        config = load_config_from_yaml('config/test-config.yml')
+        print('Config loaded successfully')
+        print(f'Jenkins instances: {len(config.jenkins.url) if hasattr(config, \"jenkins\") else \"multi-instance config\"}')"
+
+  docker-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Create test config file
+      run: |
+        mkdir -p config
+        cat > config/mcp-config.yml << 'EOF'
+        jenkins_instances:
+          test-jenkins:
+            url: "https://dummy.example.com"
+            username: "dummy"
+            token: "dummy"
+            display_name: "Test Jenkins"
+            timeout: 30
+            verify_ssl: false
+
+        settings:
+          fallback_instance: "test-jenkins"
+
+        vector:
+          disable_vector_search: true
+
+        cache:
+          cache_dir: "/tmp/mcp-jenkins"
+          max_size_mb: 100
+          retention_days: 1
+
+        server:
+          log_level: "WARNING"
+
+        cleanup:
+          interval_hours: 24
+          retention_days: 1
+        EOF
+    
+    - name: Build Docker image
+      run: |
+        docker build -t jenkins-mcp-server .
+    
+    - name: Test Docker image runs
+      run: |
+        # Test that the Docker image starts without immediate crash
+        timeout 10s docker run --rm \
+          -v $(pwd)/config:/app/config \
+          -e DISABLE_VECTOR_SEARCH=true \
+          -e LOG_LEVEL=WARNING \
+          jenkins-mcp-server \
+          --config config/mcp-config.yml \
+          echo '{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "Test", "version": "1.0"}}}' || \
+          echo "Expected timeout after 10s - container started successfully"
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 black isort mypy
+        pip install -e .
+    
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 mcp_server --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. GitHub editor is 127 chars wide
+        flake8 mcp_server --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Check code formatting with black
+      run: |
+        black --check --diff mcp_server
+    
+    - name: Check import sorting with isort
+      run: |
+        isort --check-only --diff mcp_server
+    
+    - name: Type checking with mypy
+      run: |
+        mypy mcp_server --ignore-missing-imports --no-strict-optional

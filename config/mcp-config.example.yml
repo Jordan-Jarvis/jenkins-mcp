@@ -1,0 +1,107 @@
+# Jenkins MCP Server Complete Configuration
+# This file contains all configuration needed to run the MCP server
+# Copy this file to mcp-config.yml and update with your actual values
+
+# Jenkins Instance Configuration (Multi-Jenkins Support)
+jenkins_instances:
+  # Production Jenkins Instances
+  prod-latest:
+    url: "https://jenkins-prod-latest.example.com"
+    username: "your.username@example.com"
+    token: "your-production-api-token-here"
+    display_name: "Production Latest"
+    description: "Production latest release environment"
+    timeout: 30
+    verify_ssl: true
+    max_log_size: 100000000  # 100MB
+    default_timeout: 120
+    
+  prod-stable:
+    url: "https://jenkins-prod-stable.example.com"
+    username: "your.username@example.com"
+    token: "your-production-stable-api-token"
+    display_name: "Production Stable"
+    description: "Production stable release environment"
+    timeout: 30
+    verify_ssl: true
+    max_log_size: 100000000
+    default_timeout: 120
+    
+  staging:
+    url: "https://jenkins-staging.example.com"
+    username: "your.username@example.com"
+    token: "your-staging-api-token"
+    display_name: "Staging"
+    description: "Staging environment for testing"
+    timeout: 30
+    verify_ssl: true
+    max_log_size: 100000000
+    default_timeout: 120
+    
+  dev:
+    url: "https://jenkins-dev.example.com"
+    username: "your.username@example.com"
+    token: "your-dev-api-token"
+    display_name: "Development"
+    description: "Development environment"
+    timeout: 30
+    verify_ssl: true
+    max_log_size: 50000000
+    default_timeout: 90
+
+
+# Default fallback configuration for backward compatibility
+default_instance:
+  id: "default"
+  url: "https://jenkins.example.com"
+  username: "your.username@example.com"
+  token: "your-api-token-here"
+  display_name: "Default Jenkins"
+  description: "Default Jenkins instance"
+  timeout: 30
+  verify_ssl: true
+
+# Global settings
+settings:
+  # Which instance to use when no roots are specified
+  fallback_instance: "dev"
+  
+  # Enable health checking for instances
+  enable_health_checks: true
+  health_check_interval: 300  # 5 minutes
+  
+  # Instance discovery settings
+  auto_discover_instances: false
+  
+  # Logging
+  log_instance_switching: true
+  log_health_checks: false
+
+# Vector Search Configuration
+vector:
+  disable_vector_search: false
+  qdrant_host: "http://localhost:6335"
+  collection_name: "jenkins-logs"
+  embedding_model: "all-MiniLM-L6-v2"
+  chunk_size: 500
+  chunk_overlap: 50
+  timeout: 30
+
+# Cache Configuration  
+cache:
+  cache_dir: "/tmp/mcp-jenkins"
+  max_size_mb: 1000
+  retention_days: 7
+  compression: true
+
+# Server Configuration
+server:
+  transport: "stdio"
+  log_level: "INFO"
+  log_file: ""
+
+# Cleanup Configuration
+cleanup:
+  interval_hours: 24
+  retention_days: 7
+  max_concurrent: 5

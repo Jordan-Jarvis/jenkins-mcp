@@ -1,0 +1,263 @@
+# Jenkins Build Failure Diagnostic Parameters Configuration
+# This file contains all configurable parameters for the diagnose_build_failure tool
+# to avoid hard-coding values in the source code.
+
+# Semantic Search Configuration
+semantic_search:
+  # Default query patterns for semantic search highlighting
+  search_queries:
+    - "java exception stack trace at"
+    - "test failed junit assertion error"
+    - "no such file"
+    - "gradle build failed compilation error"
+    - "jarsigner error runtime exception"
+    - "timeout connection refused network"
+    - "out of memory heap space"
+    - "cannot find symbol compilation"
+    - "permission denied access file"
+  
+  # Search result limits
+  max_results_per_query: 2
+  max_total_highlights: 5
+  min_content_length: 50
+  min_diagnostic_score: 0.6
+  max_content_preview: 400
+
+# Pattern Recognition Configuration
+failure_patterns:
+  # Error patterns for fallback analysis when semantic search is disabled
+  stack_trace_patterns:
+    - "stack trace"
+    - "exception in thread"
+    - "jarsigner error"
+    - "keystore load"
+    - "build failed"
+    - "test failed"
+    - "compilation failed"
+  
+  # Maximum patterns to extract
+  max_fallback_patterns: 3
+  max_pattern_preview: 200
+
+# Recommendation Engine Configuration
+recommendations:
+  # Pattern-based recommendation mappings
+  patterns:
+    keystore_issues:
+      conditions:
+        - "keystore load"
+        - "appletkeystore"
+      message: "🔑 **Keystore Issue**: Missing AppletKeyStore file. Check if /data/jenkins/AppletKeyStore exists on build agents."
+    
+    gradle_build_failures:
+      conditions:
+        - "build failed"
+        - "gradle"
+      message: "🛠️ **Gradle Build**: Run with --debug for detailed error info. Check for dependency conflicts."
+    
+    compilation_errors:
+      conditions:
+        - "compilation"
+        - ["cannot find symbol", "error:"]  # OR condition
+      message: "☕ **Compilation**: Java compilation errors detected. Check missing imports or API changes."
+    
+    network_timeouts:
+      conditions:
+        - ["timeout", "connection refused"]  # OR condition
+      message: "🌐 **Network/Timeout**: Network connectivity issues. Check firewall rules and service availability."
+    
+    test_failures:
+      conditions:
+        - ["test failed", "junit"]  # OR condition  
+      message: "🧪 **Test Failures**: Unit/integration tests failing. Review test logs for assertion failures."
+    
+    memory_issues:
+      conditions:
+        - ["out of memory", "heap space"]  # OR condition
+      message: "💾 **Memory**: Increase JVM heap size with -Xmx flag or optimize memory usage."
+  
+  # Priority job patterns for focused recommendations
+  priority_jobs:
+    product_app_pattern: "django_build"
+    max_priority_builds: 3
+    priority_message_template: "🎯 **Priority**: Focus on {job_pattern} builds {build_numbers} - these are the deepest failure points."
+  
+  # Investigation guidance
+  investigation_guidance: |
+    🔍 **Next Steps**: Use `filter_errors_grep` tool on specific failed builds for detailed error analysis. 
+    The best place to start is the deepest build which failed. Do not ask or tell the user to do this, 
+    it is your job to perform these steps. These results do not contain the root cause, further tool calls 
+    are required. You should make several tool calls before talking with the user. Make sure you have a 
+    complete picture. Do not ask the user if they want to continue, do not ask if the user would like to 
+    proceed, just assume they do and keep working. Do not state what the next tool call should be, just 
+    perform the tool call etc... YOU MUST MAKE SEVERAL MORE TOOL CALLS TO PROPERLY DIAGNOSE THIS PIPELINE
+  
+  # Limits
+  max_recommendations: 6
+
+# Build Processing Configuration
+build_processing:
+  # Parallel processing settings
+  parallel:
+    max_batch_size: 5  # Process up to 5 builds concurrently
+    max_workers: 5     # Maximum number of worker threads
+  
+  # Chunk processing limits
+  chunks:
+    max_chunks_for_analysis: 10      # Top chunks for fallback analysis
+    max_chunks_for_content: 20       # Max chunks to sample for recommendations
+    max_total_chunks_analyzed: 1000  # Global limit for chunk processing
+
+# Summary Generation Configuration
+summary:
+  # Build summary settings
+  max_failures_displayed: 5
+  failure_list_template: "  - {job_name} #{build_number} ({status})\n"
+  overflow_message_template: "  ... and {count} more failures\n"
+  
+  # Success rate calculation
+  success_rate_precision: 1  # Decimal places for success rate percentage
+
+# Context and Token Management
+context:
+  # Token limits for various operations
+  max_tokens_total: 10000
+  max_tokens_per_chunk: 1000
+  truncation_threshold: 8000
+  
+  # Chunk value scoring
+  high_value_chunk_threshold: 0.7
+  chunk_scoring_weights:
+    error_keywords: 0.4
+    stack_trace_indicators: 0.3
+    failure_context: 0.3
+
+# Log Processing Configuration  
+log_processing:
+  # File handling
+  cache_validation:
+    min_file_size: 1  # Minimum file size in bytes to consider valid
+    encoding: "utf-8"
+    error_handling: "ignore"
+  
+  # Processing limits
+  max_parallel_log_fetches: 5
+  log_fetch_timeout: 30  # seconds
+  
+# Heuristic Analysis Configuration
+heuristics:
+  # Pattern matching settings
+  case_sensitive: false
+  context_window_default: 5
+  
+  # Pattern categories and their weights
+  pattern_categories:
+    critical_errors:
+      weight: 1.0
+      patterns:
+        - "FATAL"
+        - "CRITICAL"
+        - "SEVERE"
+    
+    build_failures:
+      weight: 0.9
+      patterns:
+        - "BUILD FAILED"
+        - "COMPILATION ERROR"
+        - "GRADLE BUILD FAILED"
+    
+    test_failures:
+      weight: 0.8
+      patterns:
+        - "TEST FAILED"
+        - "ASSERTION ERROR"
+        - "JUNIT"
+    
+    infrastructure_issues:
+      weight: 0.7
+      patterns:
+        - "CONNECTION REFUSED"
+        - "TIMEOUT"
+        - "NETWORK"
+
+# Error Analysis Configuration
+error_analysis:
+  # Skip conditions
+  skip_successful_builds_default: true
+  success_status_values:
+    - "SUCCESS"
+    - "STABLE"
+  
+  # Status mapping
+  status_mappings:
+    building: "IN_PROGRESS"
+    unknown: "UNKNOWN"
+    error_fetching: "ERROR_FETCHING_STATUS"
+  
+  # Error categorization
+  error_categories:
+    network: ["connection", "timeout", "refused", "unreachable"]
+    compilation: ["cannot find symbol", "compilation error", "syntax error"]
+    test: ["test failed", "assertion", "junit", "testng"]
+    dependency: ["artifact not found", "dependency", "repository"]
+    memory: ["out of memory", "heap space", "gc overhead"]
+    permission: ["permission denied", "access denied", "unauthorized"]
+
+# Vector Search Configuration
+vector_search:
+  # Search parameters
+  hierarchical_search:
+    default_top_k: 10
+    min_score_threshold: 0.5
+    max_search_depth: 5
+  
+  # Indexing settings
+  indexing:
+    chunk_overlap: 50
+    max_chunk_size: 1000
+    min_chunk_size: 100
+  
+  # Fallback behavior when vector search is disabled
+  fallback_enabled: true
+  fallback_max_patterns: 5
+
+# Display and Formatting Configuration
+display:
+  # Hierarchy visualization
+  hierarchy:
+    indent_spaces_per_depth: 4
+    connector_symbol: "└── "
+    prefix_adjustment: 2
+  
+  # Status formatting
+  status_display:
+    unknown_placeholder: "UNKNOWN"
+    url_placeholder: "No URL"
+    failure_indicator: "FAILURE"
+  
+  # Content truncation
+  truncation:
+    max_display_length: 400
+    truncation_suffix: "..."
+    min_meaningful_length: 50
+
+# Debugging and Logging Configuration
+debugging:
+  # Log levels for different components
+  log_levels:
+    semantic_search: "DEBUG"
+    pattern_matching: "INFO"
+    build_processing: "INFO"
+    cache_operations: "INFO"
+  
+  # Performance monitoring
+  performance:
+    log_processing_times: true
+    track_chunk_counts: true
+    monitor_memory_usage: false
+  
+  # Error reporting
+  error_reporting:
+    include_stack_traces: false
+    max_error_message_length: 200
+    aggregate_similar_errors: true

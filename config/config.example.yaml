@@ -1,0 +1,35 @@
+jenkins:
+  url: "http://jenkins.example.com:8080"
+  username: "your_username"
+  token: "your_api_token"
+  timeout: 30
+  verify_ssl: true
+
+cache:
+  base_dir: "/tmp/mcp-jenkins"
+  max_size_mb: 10000
+  retention_days: 7
+  enable_compression: true
+
+vector:
+  host: "http://localhost:6333"
+  api_key: ""
+  collection_name: "jenkins-logs"
+  dimension: 384
+  metric: "cosine"
+  embedding_model: "all-MiniLM-L6-v2"
+  chunk_size: 150
+  chunk_overlap: 10
+  top_k_default: 5
+
+server:
+  name: "Jenkins MCP Server"
+  version: "0.1.0"
+  transport: "stdio"
+  log_level: "INFO"
+  log_file: null
+
+cleanup:
+  schedule_interval_hours: 24
+  retention_days: 7
+  max_concurrent_cleanups: 5

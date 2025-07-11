@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "jenkins-mcp": {
+      "command": "python3",
+      "args": [
+        "-m", 
+        "mcp_server.server",
+        "--config",
+        "config/mcp-config.yml"
+      ],
+      "cwd": "/Users/JordanJarvis/Documents/ai/jenkins-mcp",
+      "env": {
+        "PYTHONPATH": "/Users/JordanJarvis/Documents/ai/jenkins-mcp"
+      }
+    }
+  }
+}

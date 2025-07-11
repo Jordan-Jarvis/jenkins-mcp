@@ -1,0 +1,49 @@
+# Python
+*.egg-info
+*.pyc
+__pycache__/
+build/
+dist/
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Environment and config
+.env
+.env.*
+!.env.example
+config/mcp-config.yml
+!config/mcp-config.example.yml
+
+# MCP and application
+.roo/
+.jenkins_mcp/
+.claude/
+
+# Test artifacts
+tests/mcp_integration/fixtures/generated/
+/tmp/test-mcp-jenkins*/
+/tmp/mcp-jenkins*/
+test-results/
+
+# Logs and reports
+*.log
+*-report.json
+*-report.xml
+
+# Cache directories
+cache/
+.cache/
