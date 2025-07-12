@@ -308,6 +308,5 @@ def get_diagnostic_config() -> DiagnosticConfigLoader:
 
 def reload_diagnostic_config() -> None:
     """Reload the diagnostic configuration from file"""
-    global _config_loader
     if _config_loader is not None:
         _config_loader.reload()
