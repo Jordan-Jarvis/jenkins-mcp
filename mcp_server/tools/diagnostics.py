@@ -669,7 +669,7 @@ Primary Failure Points:
     def _get_priority_recommendation(self, failed_builds: List[Build]) -> Optional[str]:
         """Generate priority recommendation based on failed builds"""
         priority_config = self.config.config.recommendations.priority_jobs
-        pattern = priority_config.get("vault_app_pattern", "vault-app")
+        pattern = priority_config.get("app_pattern", "app")
         max_builds = priority_config.get("max_priority_builds", 3)
         message_template = priority_config.get("priority_message_template", "")
 

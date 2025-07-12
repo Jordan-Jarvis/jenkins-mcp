@@ -107,16 +107,16 @@ The `diagnose_build_failure` tool is a game-changer for debugging:
 
 # What this server provides:
 {
-  "failure_analysis": "Maven dependency conflict in vault-app module",
+  "failure_analysis": "Maven dependency conflict in build-app module",
   "root_cause": "Version mismatch between spring-boot versions",
-  "affected_subbuilds": ["vault-app #145", "integration-tests #89"],
+  "affected_subbuilds": ["build-app #145", "integration-tests #89"],
   "recommendations": [
-    "🔧 Update spring-boot version to 2.7.8 in vault-app/pom.xml",
+    "🔧 Update spring-boot version to 2.7.8 in build-app/pom.xml",
     "📋 Run dependency:tree to verify compatibility",
-    "🧪 Test with ./scripts/test-vault-integration.sh"
+    "🧪 Test with ./scripts/test-build-integration.sh"
   ],
   "relevant_logs": "Lines 2847-2893: NoSuchMethodError: spring.boot.context",
-  "hierarchy_guidance": "Focus on vault-app #145 - deepest failure point"
+  "hierarchy_guidance": "Focus on build-app #145 - deepest failure point"
 }
 ```
 
@@ -164,7 +164,7 @@ semantic_search:
     - "spring boot dependency conflict"
     - "kubernetes deployment failure" 
     - "terraform plan error"
-    - "vault authentication failed"
+    - "build authentication failed"
   min_diagnostic_score: 0.6
 
 recommendations:
@@ -197,7 +197,7 @@ Lightning-fast semantic search across all your build history:
 
 ```bash
 # Find similar failures across all builds
-semantic_search "authentication timeout vault"
+semantic_search "authentication timeout build"
 
 # Results include builds from weeks ago with similar issues
 # Ranked by relevance, not just keyword matching
