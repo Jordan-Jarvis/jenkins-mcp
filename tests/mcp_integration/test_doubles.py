@@ -1,9 +1,9 @@
 """Test doubles for MCP integration testing"""
 
+import json
 import threading
 import time
-from http.server import HTTPServer, BaseHTTPRequestHandler
-import json
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 
 class JenkinsTestDouble:

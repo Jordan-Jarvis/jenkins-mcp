@@ -8,13 +8,14 @@ Useful for environments where stdio transport is not available.
 
 import asyncio
 import json
+import logging
 import os
 import subprocess
-import logging
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
+
+import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
-import uvicorn
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)

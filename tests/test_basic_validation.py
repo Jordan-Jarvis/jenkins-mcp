@@ -1,9 +1,10 @@
 """Basic validation tests for package structure and imports"""
 
-import pytest
-import sys
 import importlib
+import sys
 from pathlib import Path
+
+import pytest
 
 
 class TestBasicValidation:
@@ -32,7 +33,7 @@ class TestBasicValidation:
     def test_config_module_imports(self):
         """Test that config module imports work"""
         try:
-            from mcp_server.config import JenkinsConfig, VectorConfig, ServerConfig
+            from mcp_server.config import JenkinsConfig, ServerConfig, VectorConfig
 
             assert JenkinsConfig is not None
             assert VectorConfig is not None

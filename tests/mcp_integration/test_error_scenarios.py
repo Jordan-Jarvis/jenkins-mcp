@@ -1,10 +1,12 @@
 """Test error handling and edge cases"""
 
+import asyncio
+import shutil
+import tempfile
+
 import pytest
 import pytest_asyncio
-import asyncio
-import tempfile
-import shutil
+
 from .mcp_test_client import MCPTestClient
 from .test_doubles import JenkinsTestDouble, QdrantTestDouble
 

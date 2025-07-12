@@ -1,12 +1,14 @@
 """End-to-end tool scenario testing"""
 
-import pytest
 import asyncio
+import logging
 import os
 from pathlib import Path
+
+import pytest
+
 from .mcp_test_client import MCPTestClient
 from .test_doubles import JenkinsTestDouble, QdrantTestDouble
-import logging
 
 # Configure logging for tests
 logging.basicConfig(level=logging.INFO)

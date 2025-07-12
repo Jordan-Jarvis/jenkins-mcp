@@ -6,10 +6,11 @@ replacing hard-coded values in the diagnose_build_failure tool.
 """
 
 import os
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
+
 import yaml
-from dataclasses import dataclass, field
 
 from ..logging_config import get_component_logger
 

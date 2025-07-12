@@ -35,7 +35,6 @@ import concurrent.futures
 import re
 from typing import Any, Dict, List, Optional, Set, Tuple
 
-
 from ..base import Build, SubBuild
 from ..exceptions import SubBuildDiscoveryError
 from ..logging_config import get_component_logger

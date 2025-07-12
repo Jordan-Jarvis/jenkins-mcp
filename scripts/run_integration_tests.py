@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Run MCP integration tests with proper setup"""
 
+import argparse
+import os
 import subprocess
 import sys
-import os
-import argparse
 from pathlib import Path
 
 

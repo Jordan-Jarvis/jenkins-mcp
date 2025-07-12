@@ -1,15 +1,17 @@
 """Integration tests using real implementations and dependency injection"""
 
-import pytest
-import tempfile
 import os
-from tests.test_fixtures import jenkins_test_env, BuildDataFactory, LogDataFactory
+import tempfile
+
+import pytest
+
+from mcp_server.cache_manager import CacheManager
 from mcp_server.config import MCPConfig
 from mcp_server.di_container import DIContainer
-from mcp_server.cache_manager import CacheManager
-from mcp_server.vector_manager import QdrantVectorManager
 from mcp_server.jenkins.jenkins_client import JenkinsClient
 from mcp_server.tool_factory import ToolFactory
+from mcp_server.vector_manager import QdrantVectorManager
+from tests.test_fixtures import BuildDataFactory, LogDataFactory, jenkins_test_env
 
 
 class TestDependencyInjectionIntegration:

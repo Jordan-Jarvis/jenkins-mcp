@@ -3,8 +3,9 @@
 
 import asyncio
 import json
+from typing import Any, Dict
+
 import httpx
-from typing import Dict, Any
 
 
 class HTTPStreamingClient:
