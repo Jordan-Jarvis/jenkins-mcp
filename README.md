@@ -260,17 +260,29 @@ semantic_search "authentication timeout build"
 # Ranked by relevance, not just keyword matching
 ```
 
-## 🔧 **Available Tools**
+## 🔧 **Available Tools** (10 Total)
 
+### 🤖 **AI & Diagnostic Tools**
 | Tool | Purpose | Unique Features |
 |------|---------|-----------------|
 | `diagnose_build_failure` | **AI failure analysis** | Sub-build hierarchy, semantic search, custom recommendations |
-| `trigger_build_async` | **Smart build triggering** | Parallel execution, parameter validation |
 | `semantic_search` | **Vector-powered search** | Cross-build pattern recognition, relevance ranking |
-| `ripgrep_search` | **High-speed log search** | Regex support, context windows, massive file handling |
+
+### 🚀 **Build Management Tools**
+| Tool | Purpose | Unique Features |
+|------|---------|-----------------|
+| `trigger_build` | **Synchronous build triggering** | Wait for completion, parameter validation |
+| `trigger_build_async` | **Asynchronous build triggering** | Non-blocking execution, parallel builds |
+| `trigger_build_with_subs` | **Sub-build monitoring** | Real-time status tracking, hierarchy discovery |
+| `get_jenkins_job_parameters` | **Job parameter discovery** | Multi-instance support, parameter details |
+
+### 🔍 **Log Analysis & Search Tools**
+| Tool | Purpose | Unique Features |
+|------|---------|-----------------|
+| `ripgrep_search` | **High-speed regex search** | Context windows, massive file handling |
+| `filter_errors_grep` | **Smart error filtering** | Preset patterns, relevance scoring |
 | `navigate_log` | **Intelligent log navigation** | Section jumping, occurrence tracking |
 | `get_log_context` | **Targeted log extraction** | Line ranges, smart chunking |
-| `trigger_build_with_subs` | **Sub-build monitoring** | Real-time status tracking |
 
 ## 🏗️ **Architecture Highlights**
 
