@@ -37,7 +37,7 @@ class DIContainer:
         Args:
             config: Optional configuration instance. If not provided, will be loaded
                    using ConfigFactory with default behavior (environment variables).
-            config_file_path: Optional path to config file for MultiJenkinsManager. 
+            config_file_path: Optional path to config file for MultiJenkinsManager.
                             If provided, this will be passed to MultiJenkinsManager.
         """
         self._instances: Dict[Type[Any], Any] = {}
@@ -68,17 +68,17 @@ class DIContainer:
             cache_manager=None,  # Will be set after cache manager creation
             jenkins_client=jenkins_client,
         )
-        
+
         # Initialize cache manager with vector manager for auto-indexing
         cache_manager = CacheManager(self.config.cache, vector_manager)
         cleanup_manager = CleanupManager(self.config.cleanup)
-        
+
         # Set the cache manager reference in vector manager
         vector_manager.cache_manager = cache_manager
 
         # Register all instances
         self._instances[MultiJenkinsManager] = multi_jenkins_manager
-        
+
         # Set the global instance
         from .multi_jenkins_manager import set_multi_jenkins_manager
         set_multi_jenkins_manager(multi_jenkins_manager)

@@ -19,6 +19,7 @@ logger = get_component_logger("config.diagnostic")
 @dataclass
 class SemanticSearchConfig:
     """Configuration for semantic search functionality"""
+
     search_queries: List[str] = field(default_factory=list)
     max_results_per_query: int = 2
     max_total_highlights: int = 5
@@ -30,6 +31,7 @@ class SemanticSearchConfig:
 @dataclass
 class FailurePatternsConfig:
     """Configuration for failure pattern recognition"""
+
     stack_trace_patterns: List[str] = field(default_factory=list)
     max_fallback_patterns: int = 3
     max_pattern_preview: int = 200

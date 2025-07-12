@@ -3,8 +3,14 @@
 from pathlib import Path
 from typing import Optional
 
-from .config import (CacheConfig, CleanupConfig, JenkinsConfig, MCPConfig,
-                     ServerConfig, VectorConfig)
+from .config import (
+    CacheConfig,
+    CleanupConfig,
+    JenkinsConfig,
+    MCPConfig,
+    ServerConfig,
+    VectorConfig,
+)
 from .exceptions import ConfigurationError
 from .logging_config import get_component_logger
 

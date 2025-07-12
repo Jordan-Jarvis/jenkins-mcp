@@ -25,7 +25,9 @@ class CacheManager:
         r"^\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z?\]\s*"
     )
 
-    def __init__(self, config: CacheConfig, vector_manager: Optional["VectorManager"] = None):
+    def __init__(
+        self, config: CacheConfig, vector_manager: Optional["VectorManager"] = None
+    ):
         """
         Initializes the CacheManager with configuration.
 
@@ -71,7 +73,7 @@ class CacheManager:
         """
         log_path = self.get_path(build)
         is_new_fetch = not log_path.exists()
-        
+
         if is_new_fetch:
             log_path.parent.mkdir(parents=True, exist_ok=True)
             raw_console_text = client.get_console_text(build.job_name, build.build_number)
@@ -84,7 +86,7 @@ class CacheManager:
             log_path.write_text(
                 processed_console_text, encoding="utf-8"
             )  # Specify encoding
-            
+
             # Automatically index the log for vector search if available
             if self.vector_manager:
                 try:
@@ -93,7 +95,7 @@ class CacheManager:
                     logger.info(f"Successfully indexed log: {build.job_name} #{build.build_number}")
                 except Exception as e:
                     logger.warning(f"Failed to auto-index log for vector search: {e}")
-        
+
         return log_path
 
     def read_lines(self, path: Path) -> List[str]:
