@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "MCP server for Jenkins integration with AI assistants, providing build management, log analysis, and failure diagnostics."
 readme = "README.md"
 license = {file = "LICENSE"}
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 keywords = ["jenkins", "mcp", "ai", "devops", "model-context-protocol"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -16,10 +16,9 @@ classifiers = [
     "Topic :: Software Development :: Build Tools",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
     "python-jenkins>=1.8.2",

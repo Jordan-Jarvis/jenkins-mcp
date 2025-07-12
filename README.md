@@ -33,7 +33,7 @@ The MCP server uses the Jenkins Tree API and wfapi for reliable sub-build discov
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.10+
 - Docker and Docker Compose
 - Jenkins server with API access
 - Jenkins API token (generate from your Jenkins user profile)
