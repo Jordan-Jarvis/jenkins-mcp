@@ -30,18 +30,14 @@ python3 -m mcp_server.server
 
 ### Production Setup (Docker - Recommended)
 ```bash
-# 1. Copy environment template
-cp .env.example .env
 
-# 2. Configure Jenkins credentials in .env
-# Edit JENKINS_URL, JENKINS_USER, JENKINS_TOKEN
 
 # 3. Start production stack
 docker-compose up -d
 
 # 4. Check deployment
 docker-compose ps
-docker-compose logs jenkins-mcp-server
+docker-compose logs jenkins-mcp-enterprise-server
 
 # 5. Stop stack
 docker-compose down
@@ -93,13 +89,13 @@ docker-compose up -d
 
 # 2. List available tools
 npx @modelcontextprotocol/inspector --cli --method tools/list \
-  docker run -i --rm --env-file .env --network jenkins-mcp_mcp-net jenkins-mcp-jenkins-mcp-server:latest
+  docker run -i --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest
 
 # 3. Call a specific tool (example: diagnose build failure)
 npx @modelcontextprotocol/inspector --cli -e HF_HOME=$HOME/.jenkins_mcp/hf_cache -- python3.13 -m mcp_server.server --method tools/call --tool-name diagnose_build_failure --tool-arg job_name=QA_JOBS/master build_number=1225 custom_error_patterns='''["error"]''' 
 
 # 4. Direct Python testing within Docker container
-docker run --rm --env-file .env --network jenkins-mcp_mcp-net jenkins-mcp-jenkins-mcp-server:latest python3 -c "
+docker run --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
 # Your Python test code here
 from mcp_server.jenkins.connection_manager import JenkinsConnectionManager
 # ... test code
@@ -109,7 +105,7 @@ from mcp_server.jenkins.connection_manager import JenkinsConnectionManager
 #### Common Docker MCP Patterns
 ```bash
 # Test sub-build discovery
-docker run --rm --env-file .env --network jenkins-mcp_mcp-net jenkins-mcp-jenkins-mcp-server:latest python3 -c "
+docker run --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
 from mcp_server.jenkins.connection_manager import JenkinsConnectionManager
 from mcp_server.jenkins.subbuild_discoverer import SubBuildDiscoverer
 from mcp_server.config import JenkinsConfig
@@ -122,7 +118,7 @@ print(f'Found {len(subbuilds)} sub-builds')
 "
 
 # Test console log analysis
-docker run --rm --env-file .env --network jenkins-mcp_mcp-net jenkins-mcp-jenkins-mcp-server:latest python3 -c "
+docker run --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
 # Get console log for analysis
 response = connection.session.get(f'{config.url}/job/QA_JOBS/job/develop/2089/consoleText')
 lines = response.text.split('\n')
@@ -257,22 +253,22 @@ This MCP server uses a modular architecture with:
 2. **Docker Network Requirements**
    ```bash
    # Check network exists
-   docker network ls | grep jenkins-mcp_mcp-net
+   docker network ls | grep jenkins-mcp-enterprise_mcp-net
    
    # Qdrant must be accessible from MCP container
-   docker run --rm --network jenkins-mcp_mcp-net alpine ping -c 1 qdrant
+   docker run --rm --network jenkins-mcp-enterprise_mcp-net alpine ping -c 1 qdrant
    ```
 
 3. **Container Health Verification**
    ```bash
    # Verify Qdrant connectivity
-   docker run --rm --env-file .env --network jenkins-mcp_mcp-net jenkins-mcp-jenkins-mcp-server:latest python3 -c "
+   docker run --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
    from mcp_server.vector_manager import QdrantVectorManager
    print('✅ Qdrant connection successful')
    "
    
    # Verify Jenkins connectivity
-   docker run --rm --env-file .env --network jenkins-mcp_mcp-net jenkins-mcp-jenkins-mcp-server:latest python3 -c "
+   docker run --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
    from mcp_server.jenkins.connection_manager import JenkinsConnectionManager
    from mcp_server.config import JenkinsConfig
    config = JenkinsConfig(url='https://jenkins-url.com', username='user', token='token', timeout=30, verify_ssl=False)
@@ -285,7 +281,7 @@ This MCP server uses a modular architecture with:
 
 ```bash
 # Step 1: Test build accessibility
-docker run --rm --env-file .env --network jenkins-mcp_mcp-net jenkins-mcp-jenkins-mcp-server:latest python3 -c "
+docker run --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
 from mcp_server.jenkins.connection_manager import JenkinsConnectionManager
 from mcp_server.config import JenkinsConfig
 
@@ -298,7 +294,7 @@ print(f'URL: {build_info.get(\"url\")}')
 "
 
 # Step 2: Discover sub-builds
-docker run --rm --env-file .env --network jenkins-mcp_mcp-net jenkins-mcp-jenkins-mcp-server:latest python3 -c "
+docker run --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
 from mcp_server.jenkins.subbuild_discoverer import SubBuildDiscoverer
 # ... discoverer code
 subbuilds = discoverer.discover_subbuilds('job/name', build_number, max_depth=3)
@@ -306,7 +302,7 @@ print(f'Found {len(subbuilds)} sub-builds')
 "
 
 # Step 3: Analyze console logs
-docker run --rm --env-file .env --network jenkins-mcp_mcp-net jenkins-mcp-jenkins-mcp-server:latest python3 -c "
+docker run --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
 # Get console log and analyze failure patterns
 response = connection.session.get(f'{config.url}/job/name/build_number/consoleText')
 lines = response.text.split('\n')
@@ -318,7 +314,7 @@ for pattern in error_patterns:
 
 # Step 4: Use MCP Inspector for structured diagnosis
 npx @modelcontextprotocol/inspector --cli --method tools/call --tool-name diagnose_build_failure \
-  docker run -i --rm --env-file .env --network jenkins-mcp_mcp-net jenkins-mcp-jenkins-mcp-server:latest << EOF
+  docker run -i --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest << EOF
 {"job_name": "job/name", "build_number": 123}
 EOF
 ```
@@ -327,11 +323,11 @@ EOF
 
 ```bash
 # Container won't start - check dependencies
-docker-compose logs jenkins-mcp-server
+docker-compose logs jenkins-mcp-enterprise-server
 
 # Network connectivity issues
-docker exec jenkins-mcp-server ping qdrant
-docker exec jenkins-mcp-server curl http://qdrant:6333/health
+docker exec jenkins-mcp-enterprise-server ping qdrant
+docker exec jenkins-mcp-enterprise-server curl http://qdrant:6333/health
 
 # Qdrant connection failures
 # ❌ Wrong: QDRANT_HOST=http://localhost:6333
@@ -339,7 +335,7 @@ docker exec jenkins-mcp-server curl http://qdrant:6333/health
 
 # MCP Inspector connection issues
 # Ensure container runs interactively: docker run -i --rm
-# Use correct network: --network jenkins-mcp_mcp-net
+# Use correct network: --network jenkins-mcp-enterprise_mcp-net
 # Pass environment: --env-file .env
 ```
 

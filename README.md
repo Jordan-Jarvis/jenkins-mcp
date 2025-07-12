@@ -51,17 +51,17 @@ A production-ready Model Context Protocol (MCP) server that transforms how AI as
 **Option 1: Install from PyPI (Recommended)**
 ```bash
 # 1. Install the package
-pip install jenkins-mcp-server
+pip install jenkins-mcp-enterprise
 
 # 2. Create configuration file
 mkdir -p config
-curl -o config/mcp-config.yml https://raw.githubusercontent.com/Jordan-Jarvis/jenkins-mcp/main/config/mcp-config.example.yml
+curl -o config/mcp-config.yml https://raw.githubusercontent.com/Jordan-Jarvis/jenkins-mcp-enterprise/main/config/mcp-config.example.yml
 ```
 
 **Option 2: Install from Source**
 ```bash
 # 1. Clone and install
-git clone https://github.com/Jordan-Jarvis/jenkins-mcp
+git clone https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise-enterprise
 cd jenkins-mcp
 python3 -m pip install -e .
 
@@ -86,7 +86,7 @@ settings:
 EOF
 
 # 4. Launch the server
-jenkins-mcp-server --config config/mcp-config.yml
+jenkins-mcp-enterprise --config config/mcp-config.yml
 ```
 
 ### 🎯 **Connect to Claude Desktop**
@@ -97,7 +97,7 @@ Add to `~/.claude_desktop_config.json`:
 {
   "mcpServers": {
     "jenkins": {
-      "command": "jenkins-mcp-server",
+      "command": "jenkins-mcp-enterprise",
       "args": ["--config", "config/mcp-config.yml"]
     }
   }
@@ -405,7 +405,7 @@ We welcome contributions! This project uses:
 
 ```bash
 # Development setup
-git clone https://github.com/Jordan-Jarvis/jenkins-mcp
+git clone https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise-enterprise
 cd jenkins-mcp
 python3 -m pip install -e .
 ./scripts/start_dev_environment.sh
@@ -445,7 +445,7 @@ GPL v3 License - build amazing things with Jenkins and AI!
 
 **🚀 Transform your Jenkins debugging experience today!**
 
-[⭐ Star this repo](https://github.com/Jordan-Jarvis/jenkins-mcp) • [📖 Read the docs](docs/) • [🐛 Report issues](https://github.com/Jordan-Jarvis/jenkins-mcp/issues) • [💬 Join discussions](https://github.com/Jordan-Jarvis/jenkins-mcp/discussions) • [☕ Buy me a coffee](https://buymeacoffee.com/jordanmjaro)
+[⭐ Star this repo](https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise) • [📖 Read the docs](docs/) • [🐛 Report issues](https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise/issues) • [💬 Join discussions](https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise/discussions) • [☕ Buy me a coffee](https://buymeacoffee.com/jordanmjaro)
 
 *Built with ❤️ for DevOps teams who demand more from their CI/CD tooling*
 

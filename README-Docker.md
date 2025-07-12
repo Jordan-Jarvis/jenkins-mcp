@@ -1,12 +1,12 @@
-# Jenkins MCP Server - Docker Deployment
+# Jenkins MCP Enterprise Server - Docker Deployment
 
-This directory contains Docker and Docker Compose configurations for running the Jenkins MCP Server stack.
+This directory contains Docker and Docker Compose configurations for running the Jenkins MCP Enterprise Server stack.
 
 ## Quick Start
 
 ### 1. Start the Stack
 ```bash
-./start-jenkins-mcp.sh
+./start-jenkins-mcp-enterprise.sh
 ```
 
 ### 2. Access Services
@@ -18,16 +18,16 @@ This directory contains Docker and Docker Compose configurations for running the
 
 The Docker stack includes:
 - **Qdrant**: Vector database for semantic search
-- **Jenkins MCP Server**: Main MCP server with Jenkins integration
+- **Jenkins MCP Enterprise Server**: Main MCP server with Jenkins integration
 - **MCP Proxy**: HTTP-to-MCP bridge for web clients
 
 ## Configuration Files
 
 - `docker-compose.mcp.yml` - Main Docker Compose configuration
-- `Dockerfile.jenkins-mcp` - Jenkins MCP server container
+- `Dockerfile.jenkins-mcp-enterprise` - Jenkins MCP Enterprise server container
 - `Dockerfile.mcp-proxy` - MCP proxy container
 - `mcpconfig.docker.json` - MCP proxy configuration for Docker
-- `start-jenkins-mcp.sh` - Startup script
+- `start-jenkins-mcp-enterprise.sh` - Startup script
 
 ## Manual Commands
 
@@ -42,7 +42,7 @@ docker-compose -f docker-compose.mcp.yml up -d
 docker-compose -f docker-compose.mcp.yml logs -f
 
 # Specific service
-docker-compose -f docker-compose.mcp.yml logs -f jenkins-mcp-server
+docker-compose -f docker-compose.mcp.yml logs -f jenkins-mcp-enterprise-server
 docker-compose -f docker-compose.mcp.yml logs -f mcp-proxy
 docker-compose -f docker-compose.mcp.yml logs -f qdrant
 ```
@@ -67,38 +67,38 @@ docker-compose -f docker-compose.mcp.yml down -v
 ### Install System Service
 ```bash
 # Copy service file
-sudo cp jenkins-mcp.service /etc/systemd/system/
+sudo cp jenkins-mcp-enterprise.service /etc/systemd/system/
 
 # Reload systemd and enable service
 sudo systemctl daemon-reload
-sudo systemctl enable jenkins-mcp.service
+sudo systemctl enable jenkins-mcp-enterprise.service
 
 # Start service
-sudo systemctl start jenkins-mcp.service
+sudo systemctl start jenkins-mcp-enterprise.service
 ```
 
 ### Manage System Service
 ```bash
 # Check status
-sudo systemctl status jenkins-mcp.service
+sudo systemctl status jenkins-mcp-enterprise.service
 
 # Start/stop/restart
-sudo systemctl start jenkins-mcp.service
-sudo systemctl stop jenkins-mcp.service
-sudo systemctl restart jenkins-mcp.service
+sudo systemctl start jenkins-mcp-enterprise.service
+sudo systemctl stop jenkins-mcp-enterprise.service
+sudo systemctl restart jenkins-mcp-enterprise.service
 
 # View logs
-sudo journalctl -u jenkins-mcp.service -f
+sudo journalctl -u jenkins-mcp-enterprise.service -f
 ```
 
 ### Uninstall System Service
 ```bash
 # Stop and disable service
-sudo systemctl stop jenkins-mcp.service
-sudo systemctl disable jenkins-mcp.service
+sudo systemctl stop jenkins-mcp-enterprise.service
+sudo systemctl disable jenkins-mcp-enterprise.service
 
 # Remove service file
-sudo rm /etc/systemd/system/jenkins-mcp.service
+sudo rm /etc/systemd/system/jenkins-mcp-enterprise.service
 sudo systemctl daemon-reload
 ```
 
@@ -106,7 +106,7 @@ sudo systemctl daemon-reload
 
 All services include health checks:
 - **Qdrant**: `curl http://localhost:6333/health`
-- **Jenkins MCP Server**: Python import test
+- **Jenkins MCP Enterprise Server**: Python import test
 - **MCP Proxy**: `curl http://localhost:3006/sse`
 
 ## Troubleshooting
@@ -120,7 +120,7 @@ docker info
 docker-compose -f docker-compose.mcp.yml logs
 
 # Check individual container
-docker logs jenkins-mcp-server
+docker logs jenkins-mcp-enterprise-server
 ```
 
 ### Configuration Issues
@@ -129,7 +129,7 @@ docker logs jenkins-mcp-server
 python3 -c "import yaml; yaml.safe_load(open('config/mcp-config.yml'))"
 
 # Test MCP server manually
-docker run --rm -it jenkins-mcp-server python3 -m mcp_server.server --help
+docker run --rm -it jenkins-mcp-enterprise-server python3 -m mcp_server.server --help
 ```
 
 ### Port Conflicts
@@ -149,9 +149,9 @@ Key environment variables in Docker Compose:
 ## Volumes
 
 - `qdrant_data` - Persistent Qdrant vector storage
-- `jenkins_mcp_cache` - Jenkins log cache
+- `jenkins_mcp_enterprise_cache` - Jenkins log cache
 - `./config:/app/config:ro` - Configuration files (read-only)
 
 ## Networking
 
-All services run on the `jenkins-mcp-network` Docker network, allowing internal communication while exposing only necessary ports to the host.
+All services run on the `jenkins-mcp-enterprise-network` Docker network, allowing internal communication while exposing only necessary ports to the host.

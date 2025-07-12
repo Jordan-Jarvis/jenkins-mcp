@@ -2,7 +2,7 @@ services:
   # Vector database for semantic search
   qdrant:
     image: qdrant/qdrant:latest
-    container_name: jenkins-mcp-qdrant
+    container_name: jenkins-mcp-enterprise-qdrant
     ports:
       - "6335:6333"  # HTTP API (changed to avoid conflict)
       - "6336:6334"  # gRPC API (changed to avoid conflict)
@@ -20,12 +20,12 @@ services:
     networks:
       - mcp-net
 
-  # Jenkins MCP Server (Production)
-  jenkins-mcp-server:
+  # Jenkins MCP Enterprise Server (Production)
+  jenkins-mcp-enterprise-server:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: jenkins-mcp-server
+    container_name: jenkins-mcp-enterprise-server
     environment:
       # Jenkins Configuration (Required)
       - JENKINS_URL=${JENKINS_URL:-https://your-jenkins-instance.com}
@@ -43,7 +43,7 @@ services:
       
       # Logging Configuration
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
-      - LOG_FILE=/app/logs/jenkins-mcp.log
+      - LOG_FILE=/app/logs/jenkins-mcp-enterprise.log
       
       # MCP Server Configuration
       - MCP_TRANSPORT=stdio
@@ -64,19 +64,19 @@ services:
       timeout: 10s
       retries: 3
 
-  # HTTP Proxy for MCP Server (Optional - for HTTP transport)
-  jenkins-mcp-proxy:
+  # HTTP Proxy for MCP Enterprise Server (Optional - for HTTP transport)
+  jenkins-mcp-enterprise-proxy:
     build:
       context: .
       dockerfile: Dockerfile.proxy
-    container_name: jenkins-mcp-proxy
+    container_name: jenkins-mcp-enterprise-proxy
     ports:
       - "8080:8080"
     environment:
-      - MCP_SERVER_HOST=jenkins-mcp-server
+      - MCP_SERVER_HOST=jenkins-mcp-enterprise-server
       - PROXY_PORT=8080
     depends_on:
-      - jenkins-mcp-server
+      - jenkins-mcp-enterprise-server
     restart: unless-stopped
     networks:
       - mcp-net
@@ -84,11 +84,11 @@ services:
       - http-proxy  # Only start with --profile http-proxy
 
   # HTTP Streaming Server (Native HTTP transport)
-  jenkins-mcp-http:
+  jenkins-mcp-enterprise-http:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: jenkins-mcp-http
+    container_name: jenkins-mcp-enterprise-http
     ports:
       - "8000:8000"
     environment:
@@ -108,7 +108,7 @@ services:
       
       # Logging Configuration
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
-      - LOG_FILE=/app/logs/jenkins-mcp.log
+      - LOG_FILE=/app/logs/jenkins-mcp-enterprise.log
       
       # MCP Server Configuration - HTTP Streaming
       - MCP_TRANSPORT=streamable-http

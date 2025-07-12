@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "jenkins-mcp-server"
+name = "jenkins-mcp-enterprise"
 version = "1.0.0"
 description = "MCP server for Jenkins integration with AI assistants, providing build management, log analysis, and failure diagnostics."
 readme = "README.md"
@@ -16,10 +16,10 @@ maintainers = [
     {name = "Jordan Jarvis", email = "your.email@domain.com"}
 ]
 keywords = ["jenkins", "mcp", "ai", "devops", "model-context-protocol"]
-homepage = "https://github.com/Jordan-Jarvis/jenkins-mcp"
-repository = "https://github.com/Jordan-Jarvis/jenkins-mcp"
-documentation = "https://github.com/Jordan-Jarvis/jenkins-mcp/blob/main/README.md"
-issues = "https://github.com/Jordan-Jarvis/jenkins-mcp/issues"
+homepage = "https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise"
+repository = "https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise"
+documentation = "https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise/blob/main/README.md"
+issues = "https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise/issues"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -60,7 +60,7 @@ packages = ["mcp_server"]
 mcp_server = ["diagnostic_config/diagnostic-parameters.yml"]
 
 [project.scripts]
-jenkins-mcp-server = "mcp_server.server:main"
+jenkins-mcp-enterprise = "mcp_server.server:main"
 
 [tool.isort]
 profile = "black"

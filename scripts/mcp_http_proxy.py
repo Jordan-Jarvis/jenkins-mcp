@@ -102,7 +102,7 @@ class MCPStdioProxy:
 
 
 # Initialize proxy
-mcp_server_host = os.getenv("MCP_SERVER_HOST", "jenkins-mcp-server")
+mcp_server_host = os.getenv("MCP_SERVER_HOST", "jenkins-mcp-enterprise-server")
 mcp_command = [
     "docker",
     "exec",
@@ -130,7 +130,7 @@ async def shutdown_event():
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy", "service": "jenkins-mcp-proxy"}
+    return {"status": "healthy", "service": "jenkins-mcp-enterprise-proxy"}
 
 
 @app.post("/mcp/initialize")
@@ -142,7 +142,7 @@ async def initialize():
             {
                 "protocolVersion": "2024-11-05",
                 "capabilities": {"tools": {}, "resources": {}},
-                "clientInfo": {"name": "jenkins-mcp-proxy", "version": "1.0.0"},
+                "clientInfo": {"name": "jenkins-mcp-enterprise-proxy", "version": "1.0.0"},
             },
         )
         return response

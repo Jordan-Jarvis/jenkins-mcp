@@ -21,7 +21,7 @@ python3 -m pytest tests/test_basic_validation.py -v --tb=short
 echo "✅ Basic validation tests passed"
 
 echo "🏗️ Step 3: Test Docker build"
-docker build -t jenkins-mcp-test . > /dev/null 2>&1
+docker build -t jenkins-mcp-enterprise-test . > /dev/null 2>&1
 echo "✅ Docker build successful"
 
 echo "📋 Step 4: Validate package installation"

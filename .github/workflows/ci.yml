@@ -43,7 +43,7 @@ jobs:
     
     - name: Test Docker build
       run: |
-        docker build -t jenkins-mcp-test .
+        docker build -t jenkins-mcp-enterprise-test .
     
     - name: Validate package installation
       run: |
@@ -132,7 +132,7 @@ jobs:
     
     - name: Build Docker image
       run: |
-        docker build -t jenkins-mcp-server .
+        docker build -t jenkins-mcp-enterprise-server .
     
     - name: Test Docker image runs
       run: |
@@ -141,7 +141,7 @@ jobs:
           -v $(pwd)/config:/app/config \
           -e DISABLE_VECTOR_SEARCH=true \
           -e LOG_LEVEL=WARNING \
-          jenkins-mcp-server \
+          jenkins-mcp-enterprise-server \
           --config config/mcp-config.yml \
           echo '{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "Test", "version": "1.0"}}}' || \
           echo "Expected timeout after 10s - container started successfully"

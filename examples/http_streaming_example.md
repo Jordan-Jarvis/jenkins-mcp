@@ -23,7 +23,7 @@ docker run -p 8000:8000 \
   -v $(pwd)/config:/app/config \
   -e MCP_TRANSPORT=streamable-http \
   -e MCP_PORT=8000 \
-  jenkins-mcp-server:latest \
+  jenkins-mcp-enterprise-server:latest \
   --config config/mcp-config.yml
 ```
 
@@ -34,7 +34,7 @@ docker run -p 8000:8000 \
 ```json
 {
   "mcpServers": {
-    "jenkins-streaming": {
+    "jenkins-mcp-enterprise-streaming": {
       "type": "streamable-http",
       "url": "http://localhost:8000/mcp"
     }

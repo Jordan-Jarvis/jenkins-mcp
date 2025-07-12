@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: 
       name: ${{ github.event.inputs.test_pypi == 'true' && 'test-pypi' || 'pypi' }}
-      url: ${{ github.event.inputs.test_pypi == 'true' && 'https://test.pypi.org/p/jenkins-mcp-server' || 'https://pypi.org/p/jenkins-mcp-server' }}
+      url: ${{ github.event.inputs.test_pypi == 'true' && 'https://test.pypi.org/p/jenkins-mcp-enterprise' || 'https://pypi.org/p/jenkins-mcp-enterprise' }}
     permissions:
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     

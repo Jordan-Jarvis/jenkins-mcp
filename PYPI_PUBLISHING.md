@@ -1,17 +1,17 @@
 # PyPI Publishing Guide
 
-This document explains how to publish the Jenkins MCP Server to PyPI so users can install it with `pip install jenkins-mcp-server`.
+This document explains how to publish the Jenkins MCP Server to PyPI so users can install it with `pip install jenkins-mcp-enterprise-enterprise`.
 
 ## 🚀 Quick Overview
 
 Users will be able to install your package with:
 ```bash
-pip install jenkins-mcp-server
+pip install jenkins-mcp-enterprise-enterprise
 ```
 
 And run it with:
 ```bash
-jenkins-mcp-server --config config/mcp-config.yml
+jenkins-mcp-enterprise-enterprise --config config/mcp-config.yml
 ```
 
 ## 📋 Setup Requirements
@@ -28,9 +28,9 @@ jenkins-mcp-server --config config/mcp-config.yml
 1. Go to https://pypi.org/manage/account/publishing/
 2. Click "Add a new pending publisher"
 3. Fill in:
-   - **PyPI Project Name**: `jenkins-mcp-server`
+   - **PyPI Project Name**: `jenkins-mcp-enterprise-enterprise`
    - **Owner**: `Jordan-Jarvis`
-   - **Repository name**: `jenkins-mcp`
+   - **Repository name**: `jenkins-mcp-enterprise`
    - **Workflow filename**: `publish.yml`
    - **Environment name**: `pypi`
 
@@ -94,7 +94,7 @@ twine upload --repository testpypi dist/*
 
 Your package includes:
 - **Main module**: `mcp_server/`
-- **Entry point**: `jenkins-mcp-server` command
+- **Entry point**: `jenkins-mcp-enterprise-enterprise` command
 - **Dependencies**: All required packages for Jenkins, MCP, AI features
 - **Diagnostic config**: Bundled diagnostic parameters
 
@@ -113,7 +113,7 @@ Version format: `MAJOR.MINOR.PATCH`
 ## ⚠️ Important Notes
 
 1. **Email in pyproject.toml**: Update `your.email@domain.com` to your real email
-2. **Package name**: `jenkins-mcp-server` is reserved once published
+2. **Package name**: `jenkins-mcp-enterprise-enterprise` is reserved once published
 3. **GPL v3 License**: Make sure you're comfortable with GPL v3 requirements
 4. **Dependencies**: Heavy dependencies (sentence-transformers, qdrant-client) will increase install time
 
@@ -137,13 +137,13 @@ Version format: `MAJOR.MINOR.PATCH`
 
 1. **Verify installation**:
    ```bash
-   pip install jenkins-mcp-server
-   jenkins-mcp-server --help
+   pip install jenkins-mcp-enterprise-enterprise
+   jenkins-mcp-enterprise-enterprise --help
    ```
 
 2. **Update README** with pip install instructions
 
-3. **Monitor PyPI page**: https://pypi.org/project/jenkins-mcp-server/
+3. **Monitor PyPI page**: https://pypi.org/project/jenkins-mcp-enterprise-enterprise/
 
 4. **Track downloads**: PyPI provides download statistics
 

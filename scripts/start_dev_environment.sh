@@ -1,7 +1,7 @@
 #!/bin/bash
 # Start development environment with Qdrant
 
-echo "🚀 Starting Jenkins MCP Server Development Environment"
+echo "🚀 Starting Jenkins MCP Enterprise Server Development Environment"
 echo "======================================================"
 
 # Check if Docker is running
