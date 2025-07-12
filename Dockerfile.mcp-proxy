@@ -1,5 +1,5 @@
 # Dockerfile for MCP Superassistant Proxy
-FROM node:18-alpine
+FROM node:24-alpine
 
 # Install dependencies
 RUN npm install -g @srbhptl39/mcp-superassistant-proxy@latest
