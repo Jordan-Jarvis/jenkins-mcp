@@ -16,10 +16,6 @@ maintainers = [
     {name = "Jordan Jarvis", email = "your.email@domain.com"}
 ]
 keywords = ["jenkins", "mcp", "ai", "devops", "model-context-protocol"]
-homepage = "https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise"
-repository = "https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise"
-documentation = "https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise/blob/main/README.md"
-issues = "https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise/issues"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -45,6 +41,12 @@ dependencies = [
     "sse-starlette>=1.6.0",
     "pyyaml>=6.0"
 ]
+
+[project.urls]
+Homepage = "https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise"
+Repository = "https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise"
+Documentation = "https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise/blob/main/README.md"
+Issues = "https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise/issues"
 
 [project.optional-dependencies]
 dev = [

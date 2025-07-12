@@ -75,12 +75,7 @@ npx @modelcontextprotocol/inspector python3 -m mcp_server.server
 npx @modelcontextprotocol/inspector --cli python3 -m mcp_server.server
 
 For more usage and info refer to: https://modelcontextprotocol.io/llms-full.txt
-# With environment variables
-JENKINS_URL="https://your-jenkins.com" \
-JENKINS_USER="your.user@domain.com" \
-JENKINS_TOKEN="your-token" \
-npx @modelcontextprotocol/inspector --cli python3 -m mcp_server.server
-```
+
 
 #### Production Mode (Docker - Required for Production Testing)
 ```bash
@@ -89,13 +84,13 @@ docker-compose up -d
 
 # 2. List available tools
 npx @modelcontextprotocol/inspector --cli --method tools/list \
-  docker run -i --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest
+  docker run -i --rm --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest
 
 # 3. Call a specific tool (example: diagnose build failure)
 npx @modelcontextprotocol/inspector --cli -e HF_HOME=$HOME/.jenkins_mcp/hf_cache -- python3.13 -m mcp_server.server --method tools/call --tool-name diagnose_build_failure --tool-arg job_name=QA_JOBS/master build_number=1225 custom_error_patterns='''["error"]''' 
 
 # 4. Direct Python testing within Docker container
-docker run --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
+docker run --rm --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
 # Your Python test code here
 from mcp_server.jenkins.connection_manager import JenkinsConnectionManager
 # ... test code
@@ -105,7 +100,7 @@ from mcp_server.jenkins.connection_manager import JenkinsConnectionManager
 #### Common Docker MCP Patterns
 ```bash
 # Test sub-build discovery
-docker run --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
+docker run --rm --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
 from mcp_server.jenkins.connection_manager import JenkinsConnectionManager
 from mcp_server.jenkins.subbuild_discoverer import SubBuildDiscoverer
 from mcp_server.config import JenkinsConfig
@@ -118,7 +113,7 @@ print(f'Found {len(subbuilds)} sub-builds')
 "
 
 # Test console log analysis
-docker run --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
+docker run --rm --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
 # Get console log for analysis
 response = connection.session.get(f'{config.url}/job/QA_JOBS/job/develop/2089/consoleText')
 lines = response.text.split('\n')
@@ -294,7 +289,7 @@ print(f'URL: {build_info.get(\"url\")}')
 "
 
 # Step 2: Discover sub-builds
-docker run --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
+docker run --rm --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
 from mcp_server.jenkins.subbuild_discoverer import SubBuildDiscoverer
 # ... discoverer code
 subbuilds = discoverer.discover_subbuilds('job/name', build_number, max_depth=3)
