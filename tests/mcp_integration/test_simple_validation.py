@@ -28,6 +28,9 @@ class TestSimpleValidation:
     @pytest.mark.asyncio
     async def test_jenkins_test_double_basic_functionality(self, simple_jenkins):
         """Test that Jenkins test double works correctly"""
+        # Simple test that the test double is running
+        assert simple_jenkins is not None
+        assert simple_jenkins.port == 18083
         import requests
         
         # Test whoami endpoint

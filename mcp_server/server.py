@@ -207,11 +207,12 @@ def load_config_from_yaml(config_path: str) -> MCPConfig:
     # Extract other configs
     vector_data = config_data.get("vector", {})
     vector_config = VectorConfig(
-        host=vector_data.get("qdrant_host", "http://localhost:6335"),
+        host=vector_data.get("host", vector_data.get("qdrant_host", "http://localhost:6333")),
         collection_name=vector_data.get("collection_name", "jenkins-logs"),
         embedding_model=vector_data.get("embedding_model", "all-MiniLM-L6-v2"),
         chunk_size=vector_data.get("chunk_size", 50),
         chunk_overlap=vector_data.get("chunk_overlap", 5),
+        top_k_default=vector_data.get("top_k_default", 5),
         timeout=vector_data.get("timeout", 30),
     )
 

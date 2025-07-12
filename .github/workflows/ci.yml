@@ -47,8 +47,9 @@ jobs:
     
     - name: Validate package installation
       run: |
-        python -c "import mcp_server; print('Package imports successfully')"
-        python -c "from mcp_server.server import main; print('Server module imports successfully')"
+        python -c "import mcp_server; print('✅ Package imports successfully')"
+        python -c "from mcp_server.server import main; print('✅ Server module imports successfully')"
+        python -c "from mcp_server.server import load_config_from_yaml; print('✅ Config loading function available')"
     
     - name: Test config file validation
       run: |
@@ -62,11 +63,20 @@ jobs:
             token: "dummy"
             display_name: "Test Jenkins"
 
+        # Required for backward compatibility with config loader
+        default_instance:
+          url: "https://dummy.example.com"
+          username: "dummy"
+          token: "dummy"
+          timeout: 30
+          verify_ssl: false
+
         settings:
           fallback_instance: "test-jenkins"
 
         vector:
           disable_vector_search: true
+          host: "http://localhost:6333"
 
         cache:
           cache_dir: "/tmp/mcp-jenkins"
@@ -79,8 +89,8 @@ jobs:
         python -c "
         from mcp_server.server import load_config_from_yaml
         config = load_config_from_yaml('config/test-config.yml')
-        print('Config loaded successfully')
-        print(f'Jenkins instances: {len(config.jenkins.url) if hasattr(config, \"jenkins\") else \"multi-instance config\"}')"
+        print('✅ Config loaded successfully')
+        print(f'✅ Jenkins URL: {config.jenkins.url if hasattr(config, \"jenkins\") and hasattr(config.jenkins, \"url\") else \"multi-instance config\"}')"
 
   docker-test:
     runs-on: ubuntu-latest
