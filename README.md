@@ -406,6 +406,24 @@ python3 -m pytest tests/ -v
 python3 -m black .
 ```
 
+## ☕ **Support the Project**
+
+If this Jenkins MCP server has saved you time debugging build failures or made your CI/CD workflows more efficient, consider supporting its development:
+
+<div align="center">
+
+[![Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://buymeacoffee.com/jordanmjaro)
+
+**Every coffee helps fuel more features and improvements!** ☕️
+
+</div>
+
+Your support helps maintain this project and develop new features like:
+- 🔍 Enhanced AI diagnostic capabilities
+- 🚀 Additional Jenkins integrations 
+- 📊 Advanced analytics and reporting
+- 🛠️ New MCP tools and workflows
+
 ## 📝 **License**
 
 GPL v3 License - build amazing things with Jenkins and AI!
@@ -416,7 +434,7 @@ GPL v3 License - build amazing things with Jenkins and AI!
 
 **🚀 Transform your Jenkins debugging experience today!**
 
-[⭐ Star this repo](https://github.com/Jordan-Jarvis/jenkins-mcp) • [📖 Read the docs](docs/) • [🐛 Report issues](https://github.com/Jordan-Jarvis/jenkins-mcp/issues) • [💬 Join discussions](https://github.com/Jordan-Jarvis/jenkins-mcp/discussions)
+[⭐ Star this repo](https://github.com/Jordan-Jarvis/jenkins-mcp) • [📖 Read the docs](docs/) • [🐛 Report issues](https://github.com/Jordan-Jarvis/jenkins-mcp/issues) • [💬 Join discussions](https://github.com/Jordan-Jarvis/jenkins-mcp/discussions) • [☕ Buy me a coffee](https://buymeacoffee.com/jordanmjaro)
 
 *Built with ❤️ for DevOps teams who demand more from their CI/CD tooling*
 
