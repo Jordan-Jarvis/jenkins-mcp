@@ -129,19 +129,19 @@ jenkins_instances:
   us-east-prod:
     url: "https://jenkins-us-east.company.com"
     username: "service-account@company.com"
-    token: "${JENKINS_US_EAST_TOKEN}"
+    token: "your-api-token-here"
     description: "US East Production Environment"
     
   eu-west-prod:
     url: "https://jenkins-eu-west.company.com"
     username: "service-account@company.com"
-    token: "${JENKINS_EU_WEST_TOKEN}"
+    token: "your-api-token-here"
     description: "EU West Production Environment"
     
   development:
     url: "https://jenkins-dev.company.com"
     username: "dev-user@company.com"
-    token: "${JENKINS_DEV_TOKEN}"
+    token: "your-api-token-here"
     description: "Development Environment"
 
 settings:
@@ -152,16 +152,20 @@ settings:
 
 ### 🧠 **Configurable AI Diagnostics**
 
-Tune the AI to understand your specific technology stack:
+The diagnostic engine is fully customizable to understand your specific technology stack and organizational patterns:
+
+**📋 Quick Reference**: [Diagnostic Parameters Quick Guide](config/diagnostic-parameters-quick-reference.md)
+**📚 Complete Documentation**: [Diagnostic Parameters Guide](config/diagnostic-parameters-guide.md)
 
 ```yaml
-# config/diagnostic-parameters.yml
+# config/diagnostic-parameters.yml - User override file (auto-detected)
 semantic_search:
   search_queries:
     - "spring boot dependency conflict"
-    - "kubernetes deployment failure"
+    - "kubernetes deployment failure" 
     - "terraform plan error"
     - "vault authentication failed"
+  min_diagnostic_score: 0.6
 
 recommendations:
   patterns:
@@ -172,7 +176,20 @@ recommendations:
     k8s_deployment_failure:
       conditions: ["kubernetes", "deployment", "failed"]
       message: "☸️ K8s deployment issue. Check resource limits and network policies."
+
+build_processing:
+  parallel:
+    max_workers: 8        # High performance: 8, Resource constrained: 2
+    max_batch_size: 10    # Concurrent builds to process
+  
+context:
+  max_tokens_total: 20000 # Memory budget for analysis
 ```
+
+**🎯 Common Configurations:**
+- **High Performance**: `max_workers: 8, max_tokens_total: 20000`
+- **Resource Constrained**: `max_workers: 2, max_tokens_total: 3000`
+- **Detailed Analysis**: `max_total_highlights: 10, max_recommendations: 10`
 
 ### ⚡ **Vector-Powered Search**
 
@@ -228,11 +245,12 @@ semantic_search "authentication timeout vault"
 ### 🐳 **Docker Compose (Recommended)**
 
 ```bash
-# 1. Copy environment template
-cp .env.example .env
+# 1. Configure your Jenkins instances
+cp config/mcp-config.example.yml config/mcp-config.yml
+vim config/mcp-config.yml  # Add your Jenkins URLs and tokens
 
-# 2. Configure your Jenkins credentials
-vim .env  # Add your Jenkins URLs and tokens
+# 2. Copy Docker template and configure
+cp .env.example .env
 
 # 3. Deploy the full stack
 docker-compose up -d
@@ -242,39 +260,20 @@ docker-compose ps
 curl http://localhost:8000/health
 ```
 
-### ☸️ **Kubernetes Deployment**
+### ⚙️ **Configuration Management**
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: jenkins-mcp-pro
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: jenkins-mcp-pro
-  template:
-    metadata:
-      labels:
-        app: jenkins-mcp-pro
-    spec:
-      containers:
-      - name: jenkins-mcp
-        image: jenkins-mcp-pro:latest
-        ports:
-        - containerPort: 8000
-        env:
-        - name: JENKINS_URL
-          valueFrom:
-            secretKeyRef:
-              name: jenkins-secrets
-              key: url
-        - name: JENKINS_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: jenkins-secrets
-              key: token
+All configuration is handled through YAML files - no environment variables needed:
+
+```bash
+# Create your configuration file
+cp config/mcp-config.example.yml config/mcp-config.yml
+
+# Launch with configuration
+python3 -m mcp_server.server --config config/mcp-config.yml
+
+# Custom diagnostic parameters (optional)
+cp mcp_server/diagnostic_config/diagnostic-parameters.yml config/diagnostic-parameters.yml
+# Edit config/diagnostic-parameters.yml as needed
 ```
 
 ## 🔐 **Security Features**
@@ -283,7 +282,7 @@ spec:
 - **SSL Verification**: Configurable certificate validation
 - **Token-Based Access**: Secure API token authentication
 - **Network Isolation**: Docker network security
-- **Credential Management**: Environment variable and secret support
+- **Credential Management**: YAML configuration file support
 
 ## 📈 **Performance Benchmarks**
 
@@ -299,20 +298,20 @@ spec:
 
 ### 📚 **Documentation**
 - **[Configuration Guide](config/README.md)** - Complete setup instructions
-- **[Diagnostic Tuning](config/diagnostic-parameters-guide.md)** - Customize AI behavior
+- **[Diagnostic Parameters Guide](config/diagnostic-parameters-guide.md)** - Complete AI customization
+- **[Diagnostic Quick Reference](config/diagnostic-parameters-quick-reference.md)** - Common configurations
 - **[Developer Guide](CLAUDE.md)** - Architecture and development
-- **[API Reference](docs/api.md)** - Tool specifications
 
 ### 🧪 **Examples**
 ```bash
-# Test the diagnostic engine
-python3 scripts/test_diagnostics.py --job myapp --build 123
+# Test the diagnostic engine with custom config
+python3 -m mcp_server.server --config config/mcp-config.yml
 
-# Validate your configuration
-python3 scripts/validate_config.py --config config/mcp-config.yml
+# Validate your configuration syntax
+python3 -c "import yaml; yaml.safe_load(open('config/mcp-config.yml'))"
 
-# Performance testing
-python3 scripts/benchmark.py --concurrent-builds 10
+# Test diagnostic parameters
+python3 -c "from mcp_server.diagnostic_config import get_diagnostic_config; get_diagnostic_config()"
 ```
 
 ## 🤝 **Contributing**
