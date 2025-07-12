@@ -24,13 +24,41 @@ python3 -m pip install -e .
 # Or install with user flag if permissions issues
 python3 -m pip install --user -e .
 
-# Run MCP server locally
-python3 -m mcp_server.server
+# Create configuration file from template
+cp config/mcp-config.example.yml config/mcp-config.yml
+# Edit config/mcp-config.yml with your Jenkins URLs and credentials
+
+# Run MCP server locally with configuration
+python3 -m mcp_server.server --config config/mcp-config.yml
 ```
+
+### ⚙️ Configuration File Usage
+
+The `--config` option is **required** for most operations to specify your Jenkins instances and settings:
+
+```bash
+# All development commands should use --config
+python3 -m mcp_server.server --config config/mcp-config.yml
+
+# MCP Inspector testing
+npx @modelcontextprotocol/inspector --cli python3 -m mcp_server.server --config config/mcp-config.yml
+
+# Custom diagnostic parameters
+export JENKINS_MCP_DIAGNOSTIC_CONFIG="/path/to/custom-diagnostic-parameters.yml"
+python3 -m mcp_server.server --config config/mcp-config.yml
+```
+
+**Without `--config`:** The server will have no Jenkins instances configured and most tools will fail.
 
 ### Production Setup (Docker - Recommended)
 ```bash
+# 1. Create configuration file from template
+cp config/mcp-config.example.yml config/mcp-config.yml
+# Edit config/mcp-config.yml with your Jenkins URLs and credentials
 
+# 2. Copy environment template and configure
+cp .env.example .env
+# Edit .env if needed (optional for file-based config)
 
 # 3. Start production stack
 docker-compose up -d
@@ -69,10 +97,10 @@ python3 tests/test_massive_scale_integration.py
 npm install -g @modelcontextprotocol/inspector
 
 # Run MCP inspector with server
-npx @modelcontextprotocol/inspector python3 -m mcp_server.server
+npx @modelcontextprotocol/inspector python3 -m mcp_server.server --config config/mcp-config.yml
 
 # Use --cli flag for command-line interface
-npx @modelcontextprotocol/inspector --cli python3 -m mcp_server.server
+npx @modelcontextprotocol/inspector --cli python3 -m mcp_server.server --config config/mcp-config.yml
 
 For more usage and info refer to: https://modelcontextprotocol.io/llms-full.txt
 
@@ -87,7 +115,7 @@ npx @modelcontextprotocol/inspector --cli --method tools/list \
   docker run -i --rm --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest
 
 # 3. Call a specific tool (example: diagnose build failure)
-npx @modelcontextprotocol/inspector --cli -e HF_HOME=$HOME/.jenkins_mcp/hf_cache -- python3.13 -m mcp_server.server --method tools/call --tool-name diagnose_build_failure --tool-arg job_name=QA_JOBS/master build_number=1225 custom_error_patterns='''["error"]''' 
+npx @modelcontextprotocol/inspector --cli -e HF_HOME=$HOME/.jenkins_mcp/hf_cache -- python3.13 -m mcp_server.server --config config/mcp-config.yml --method tools/call --tool-name diagnose_build_failure --tool-arg job_name=QA_JOBS/master build_number=1225 custom_error_patterns='''["error"]''' 
 
 # 4. Direct Python testing within Docker container
 docker run --rm --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -c "
@@ -139,10 +167,10 @@ docker-compose down
 ### Configuration Validation
 ```bash
 # Validate configuration (use python3)
-python3 -m mcp_server.cli validate
+python3 -m mcp_server.cli validate --config config/mcp-config.yml
 
 # Validate with custom config file
-python3 -m mcp_server.cli validate --config config/my-config.json
+python3 -m mcp_server.cli validate --config config/my-config.yml
 ```
 
 ### Diagnostic Configuration
@@ -157,11 +185,11 @@ The `diagnose_build_failure` tool is fully configurable through YAML parameters.
 python3 scripts/validate_diagnostic_config.py
 
 # Run with default bundled diagnostic parameters
-python3 -m mcp_server.server
+python3 -m mcp_server.server --config config/mcp-config.yml
 
 # Run with custom diagnostic parameters (environment variable)
 export JENKINS_MCP_DIAGNOSTIC_CONFIG="/path/to/custom-diagnostic-parameters.yml"
-python3 -m mcp_server.server
+python3 -m mcp_server.server --config config/mcp-config.yml
 
 # Create user override (automatically detected)
 cp mcp_server/diagnostic_config/diagnostic-parameters.yml config/diagnostic-parameters.yml
@@ -309,7 +337,7 @@ for pattern in error_patterns:
 
 # Step 4: Use MCP Inspector for structured diagnosis
 npx @modelcontextprotocol/inspector --cli --method tools/call --tool-name diagnose_build_failure \
-  docker run -i --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest << EOF
+  docker run -i --rm --env-file .env --network jenkins-mcp-enterprise_mcp-net jenkins-mcp-enterprise-jenkins-mcp-enterprise-server:latest python3 -m mcp_server.server --config config/mcp-config.yml << EOF
 {"job_name": "job/name", "build_number": 123}
 EOF
 ```
