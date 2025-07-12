@@ -48,6 +48,17 @@ A production-ready Model Context Protocol (MCP) server that transforms how AI as
 
 ### ⚡ **60-Second Setup**
 
+**Option 1: Install from PyPI (Recommended)**
+```bash
+# 1. Install the package
+pip install jenkins-mcp-server
+
+# 2. Create configuration file
+mkdir -p config
+curl -o config/mcp-config.yml https://raw.githubusercontent.com/Jordan-Jarvis/jenkins-mcp/main/config/mcp-config.example.yml
+```
+
+**Option 2: Install from Source**
 ```bash
 # 1. Clone and install
 git clone https://github.com/Jordan-Jarvis/jenkins-mcp
@@ -75,7 +86,7 @@ settings:
 EOF
 
 # 4. Launch the server
-python3 -m mcp_server.server --config config/mcp-config.yml
+jenkins-mcp-server --config config/mcp-config.yml
 ```
 
 ### 🎯 **Connect to Claude Desktop**
@@ -86,8 +97,8 @@ Add to `~/.claude_desktop_config.json`:
 {
   "mcpServers": {
     "jenkins": {
-      "command": "python3",
-      "args": ["-m", "mcp_server.server", "--config", "config/mcp-config.yml"]
+      "command": "jenkins-mcp-server",
+      "args": ["--config", "config/mcp-config.yml"]
     }
   }
 }

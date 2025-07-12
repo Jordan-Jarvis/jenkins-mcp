@@ -9,7 +9,17 @@ description = "MCP server for Jenkins integration with AI assistants, providing 
 readme = "README.md"
 license = {file = "LICENSE"}
 requires-python = ">=3.10"
+authors = [
+    {name = "Jordan Jarvis", email = "your.email@domain.com"}
+]
+maintainers = [
+    {name = "Jordan Jarvis", email = "your.email@domain.com"}
+]
 keywords = ["jenkins", "mcp", "ai", "devops", "model-context-protocol"]
+homepage = "https://github.com/Jordan-Jarvis/jenkins-mcp"
+repository = "https://github.com/Jordan-Jarvis/jenkins-mcp"
+documentation = "https://github.com/Jordan-Jarvis/jenkins-mcp/blob/main/README.md"
+issues = "https://github.com/Jordan-Jarvis/jenkins-mcp/issues"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
