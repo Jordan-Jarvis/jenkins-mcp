@@ -76,7 +76,9 @@ class CacheManager:
 
         if is_new_fetch:
             log_path.parent.mkdir(parents=True, exist_ok=True)
-            raw_console_text = client.get_console_text(build.job_name, build.build_number)
+            raw_console_text = client.get_console_text(
+                build.job_name, build.build_number
+            )
 
             # Remove timestamps from each line
             lines = raw_console_text.splitlines()
@@ -90,9 +92,13 @@ class CacheManager:
             # Automatically index the log for vector search if available
             if self.vector_manager:
                 try:
-                    logger.info(f"Auto-indexing log for vector search: {build.job_name} #{build.build_number}")
+                    logger.info(
+                        f"Auto-indexing log for vector search: {build.job_name} #{build.build_number}"
+                    )
                     self.vector_manager.index_build_log(build, log_path)
-                    logger.info(f"Successfully indexed log: {build.job_name} #{build.build_number}")
+                    logger.info(
+                        f"Successfully indexed log: {build.job_name} #{build.build_number}"
+                    )
                 except Exception as e:
                     logger.warning(f"Failed to auto-index log for vector search: {e}")
 

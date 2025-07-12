@@ -153,7 +153,9 @@ class RipgrepSearchTool(LogOperationTool):
                     start_line = int(start.strip())
                     end_line = int(end.strip())
                     # Create a temporary file with just the line range
-                    temp_file = self._extract_line_range(Path(str(log_path)), start_line, end_line)
+                    temp_file = self._extract_line_range(
+                        Path(str(log_path)), start_line, end_line
+                    )
                     log_path = temp_file
                 else:
                     raise ValueError("Line range must be in format 'start-end'")
@@ -173,9 +175,7 @@ class RipgrepSearchTool(LogOperationTool):
                 raise ToolExecutionError(f"Ripgrep execution failed: {result.stderr}")
 
             # Parse JSON output
-            matches = self._parse_ripgrep_json(
-                result.stdout, max_output_lines
-            )
+            matches = self._parse_ripgrep_json(result.stdout, max_output_lines)
 
             # Clean up temp file if created
             if line_range and "temp_file" in locals():

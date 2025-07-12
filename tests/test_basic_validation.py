@@ -13,6 +13,7 @@ class TestBasicValidation:
         """Test that core package imports work"""
         try:
             import mcp_server
+
             assert mcp_server is not None
             print("✅ mcp_server package imports successfully")
         except ImportError as e:
@@ -22,6 +23,7 @@ class TestBasicValidation:
         """Test that server module imports work"""
         try:
             from mcp_server.server import create_server
+
             assert create_server is not None
             print("✅ server module imports successfully")
         except ImportError as e:
@@ -31,6 +33,7 @@ class TestBasicValidation:
         """Test that config module imports work"""
         try:
             from mcp_server.config import JenkinsConfig, VectorConfig, ServerConfig
+
             assert JenkinsConfig is not None
             assert VectorConfig is not None
             assert ServerConfig is not None
@@ -41,14 +44,14 @@ class TestBasicValidation:
     def test_essential_dependencies_available(self):
         """Test that essential dependencies are available"""
         essential_deps = [
-            'requests',
-            'yaml',
-            'jenkins',  # python-jenkins package provides jenkins module
-            'qdrant_client',
-            'sentence_transformers',
-            'tiktoken'
+            "requests",
+            "yaml",
+            "jenkins",  # python-jenkins package provides jenkins module
+            "qdrant_client",
+            "sentence_transformers",
+            "tiktoken",
         ]
-        
+
         missing_deps = []
         for dep in essential_deps:
             try:
@@ -56,7 +59,7 @@ class TestBasicValidation:
                 print(f"✅ {dep} is available")
             except ImportError:
                 missing_deps.append(dep)
-        
+
         if missing_deps:
             pytest.fail(f"Missing essential dependencies: {missing_deps}")
 
@@ -64,16 +67,17 @@ class TestBasicValidation:
         """Test that expected package structure exists"""
         # Get the package root
         import mcp_server
+
         package_path = Path(mcp_server.__file__).parent
-        
+
         expected_modules = [
-            'server.py',
-            'config.py',
-            'base.py',
-            'di_container.py',
-            'tool_factory.py'
+            "server.py",
+            "config.py",
+            "base.py",
+            "di_container.py",
+            "tool_factory.py",
         ]
-        
+
         missing_modules = []
         for module in expected_modules:
             module_path = package_path / module
@@ -81,26 +85,27 @@ class TestBasicValidation:
                 missing_modules.append(module)
             else:
                 print(f"✅ {module} exists")
-        
+
         if missing_modules:
             pytest.fail(f"Missing expected modules: {missing_modules}")
 
     def test_tools_directory_exists(self):
         """Test that tools directory exists with expected tools"""
         import mcp_server
+
         package_path = Path(mcp_server.__file__).parent
-        tools_path = package_path / 'tools'
-        
+        tools_path = package_path / "tools"
+
         assert tools_path.exists(), "tools directory should exist"
         assert tools_path.is_dir(), "tools should be a directory"
-        
+
         expected_tools = [
-            '__init__.py',
-            'base_tools.py',
-            'jenkins_tools.py',
-            'diagnostics.py'
+            "__init__.py",
+            "base_tools.py",
+            "jenkins_tools.py",
+            "diagnostics.py",
         ]
-        
+
         missing_tools = []
         for tool in expected_tools:
             tool_path = tools_path / tool
@@ -108,16 +113,19 @@ class TestBasicValidation:
                 missing_tools.append(tool)
             else:
                 print(f"✅ tools/{tool} exists")
-        
+
         if missing_tools:
             pytest.fail(f"Missing expected tools: {missing_tools}")
 
     def test_diagnostic_config_exists(self):
         """Test that diagnostic configuration exists"""
         import mcp_server
+
         package_path = Path(mcp_server.__file__).parent
-        diagnostic_config_path = package_path / 'diagnostic_config' / 'diagnostic-parameters.yml'
-        
+        diagnostic_config_path = (
+            package_path / "diagnostic_config" / "diagnostic-parameters.yml"
+        )
+
         assert diagnostic_config_path.exists(), "diagnostic-parameters.yml should exist"
         print("✅ diagnostic configuration exists")
 
@@ -126,6 +134,7 @@ class TestBasicValidation:
         try:
             # Try to get version from pyproject.toml or package
             import mcp_server
+
             # This should not fail with basic import
             assert mcp_server is not None
             print("✅ version info accessible")

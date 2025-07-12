@@ -43,7 +43,7 @@ class MultiJenkinsManager:
         if config_file is None:
             # Get the project root directory (parent of mcp_server)
             project_root = Path(__file__).parent.parent
-            
+
             # Try new unified config first, then fallback to old config
             mcp_config = project_root / "config" / "mcp-config.yml"
             jenkins_config = project_root / "config" / "jenkins-instances.yml"
@@ -90,7 +90,9 @@ class MultiJenkinsManager:
                             logger.error(f"No URL for Jenkins instance {instance_id}")
                             continue
                         if not resolved_config.get("username"):
-                            logger.error(f"No username for Jenkins instance {instance_id}")
+                            logger.error(
+                                f"No username for Jenkins instance {instance_id}"
+                            )
                             continue
                         if not resolved_config.get("token"):
                             logger.error(f"No token for Jenkins instance {instance_id}")
@@ -129,7 +131,9 @@ class MultiJenkinsManager:
                     if default_config.get("url") and default_config.get("username"):
                         default_id = default_config.get("id", "default")
                         if not default_config.get("token"):
-                            logger.error(f"No token for default Jenkins instance: {default_config}")
+                            logger.error(
+                                f"No token for default Jenkins instance: {default_config}"
+                            )
                         else:
                             self.instances_config[default_id] = JenkinsInstanceConfig(
                                 id=default_id,
@@ -143,9 +147,13 @@ class MultiJenkinsManager:
                                 timeout=default_config.get("timeout", 30),
                                 verify_ssl=default_config.get("verify_ssl", True),
                             )
-                            logger.info(f"Successfully loaded default Jenkins instance: {default_id}")
+                            logger.info(
+                                f"Successfully loaded default Jenkins instance: {default_id}"
+                            )
                     else:
-                        logger.warning(f"Invalid default instance config: missing url or username")
+                        logger.warning(
+                            f"Invalid default instance config: missing url or username"
+                        )
 
                 logger.info(f"Loaded {len(self.instances_config)} Jenkins instances")
 
@@ -402,7 +410,9 @@ multi_jenkins_manager = None
 def get_multi_jenkins_manager() -> MultiJenkinsManager:
     """Get the global multi-Jenkins manager instance"""
     if multi_jenkins_manager is None:
-        raise RuntimeError("MultiJenkinsManager not initialized. Use DIContainer to initialize it properly.")
+        raise RuntimeError(
+            "MultiJenkinsManager not initialized. Use DIContainer to initialize it properly."
+        )
     return multi_jenkins_manager
 
 

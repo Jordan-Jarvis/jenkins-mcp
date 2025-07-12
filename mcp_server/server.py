@@ -12,8 +12,15 @@ from mcp.server.fastmcp import FastMCP
 print("MCP_SERVER.PY: Script execution started.", file=sys.stderr)
 sys.stderr.flush()
 
-from .config import (CacheConfig, CleanupConfig, JenkinsConfig, MCPConfig,
-                     ServerConfig, VectorConfig)
+from .config import (
+    CacheConfig,
+    CleanupConfig,
+    JenkinsConfig,
+    MCPConfig,
+    ServerConfig,
+    VectorConfig,
+)
+
 # Import explicit dependency injection components
 from .di_container import DIContainer
 from .logging_config import setup_logging
@@ -207,7 +214,9 @@ def load_config_from_yaml(config_path: str) -> MCPConfig:
     # Extract other configs
     vector_data = config_data.get("vector", {})
     vector_config = VectorConfig(
-        host=vector_data.get("host", vector_data.get("qdrant_host", "http://localhost:6333")),
+        host=vector_data.get(
+            "host", vector_data.get("qdrant_host", "http://localhost:6333")
+        ),
         collection_name=vector_data.get("collection_name", "jenkins-logs"),
         embedding_model=vector_data.get("embedding_model", "all-MiniLM-L6-v2"),
         chunk_size=vector_data.get("chunk_size", 50),
@@ -252,27 +261,52 @@ def main():
     # Parse command line arguments
     parser = argparse.ArgumentParser(description="Jenkins MCP Server")
     parser.add_argument("--config", type=str, help="Path to YAML configuration file")
-    parser.add_argument("--diagnostic-config", type=str, 
-                        help="Path to diagnostic parameters YAML file (overrides default bundled config)")
-    parser.add_argument("--transport", type=str, default="stdio", 
-                        choices=["stdio", "sse", "streamable-http"],
-                        help="Transport protocol to use (default: stdio)")
-    parser.add_argument("--mount-path", type=str, default="/mcp",
-                        help="Mount path for HTTP transports (default: /mcp)")
-    parser.add_argument("--port", type=int, default=8000,
-                        help="Port for HTTP transports (default: 8000)")
-    parser.add_argument("--host", type=str, default="0.0.0.0",
-                        help="Host for HTTP transports (default: 0.0.0.0)")
+    parser.add_argument(
+        "--diagnostic-config",
+        type=str,
+        help="Path to diagnostic parameters YAML file (overrides default bundled config)",
+    )
+    parser.add_argument(
+        "--transport",
+        type=str,
+        default="stdio",
+        choices=["stdio", "sse", "streamable-http"],
+        help="Transport protocol to use (default: stdio)",
+    )
+    parser.add_argument(
+        "--mount-path",
+        type=str,
+        default="/mcp",
+        help="Mount path for HTTP transports (default: /mcp)",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8000,
+        help="Port for HTTP transports (default: 8000)",
+    )
+    parser.add_argument(
+        "--host",
+        type=str,
+        default="0.0.0.0",
+        help="Host for HTTP transports (default: 0.0.0.0)",
+    )
     args = parser.parse_args()
 
-    print(f"Initializing Jenkins MCP Server (FastMCP) with {args.transport} transport...", file=sys.stderr)
+    print(
+        f"Initializing Jenkins MCP Server (FastMCP) with {args.transport} transport...",
+        file=sys.stderr,
+    )
     sys.stderr.flush()
 
     # Set diagnostic config path if provided
     if args.diagnostic_config:
         import os
-        os.environ['JENKINS_MCP_DIAGNOSTIC_CONFIG'] = args.diagnostic_config
-        print(f"Using custom diagnostic config: {args.diagnostic_config}", file=sys.stderr)
+
+        os.environ["JENKINS_MCP_DIAGNOSTIC_CONFIG"] = args.diagnostic_config
+        print(
+            f"Using custom diagnostic config: {args.diagnostic_config}", file=sys.stderr
+        )
 
     # Load config if provided
     config = None
@@ -288,14 +322,21 @@ def main():
 
     try:
         if args.transport in ["sse", "streamable-http"]:
-            print(f"Starting Jenkins MCP Server (FastMCP) on {args.host}:{args.port} with {args.transport} transport...", file=sys.stderr)
+            print(
+                f"Starting Jenkins MCP Server (FastMCP) on {args.host}:{args.port} with {args.transport} transport...",
+                file=sys.stderr,
+            )
             # For HTTP transports, we need to set up the port
             import os
+
             os.environ["UVICORN_HOST"] = args.host
             os.environ["UVICORN_PORT"] = str(args.port)
         else:
-            print("Starting Jenkins MCP Server (FastMCP) with stdio transport...", file=sys.stderr)
-        
+            print(
+                "Starting Jenkins MCP Server (FastMCP) with stdio transport...",
+                file=sys.stderr,
+            )
+
         sys.stderr.flush()
         server.run(transport=args.transport, mount_path=args.mount_path)
     except KeyboardInterrupt:

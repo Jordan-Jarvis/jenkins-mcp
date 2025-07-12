@@ -180,8 +180,11 @@ class CleanupManager:
 
                 for build_id in orphaned_builds:
                     try:
-                        from qdrant_client.models import (FieldCondition,
-                                                          Filter, MatchValue)
+                        from qdrant_client.models import (
+                            FieldCondition,
+                            Filter,
+                            MatchValue,
+                        )
 
                         self.vector_manager.client.delete(
                             collection_name=self.vector_manager.collection_name,

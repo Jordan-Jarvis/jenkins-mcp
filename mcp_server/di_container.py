@@ -31,7 +31,9 @@ class DIContainer:
     are satisfied.
     """
 
-    def __init__(self, config: Optional[MCPConfig] = None, config_file_path: Optional[str] = None) -> None:
+    def __init__(
+        self, config: Optional[MCPConfig] = None, config_file_path: Optional[str] = None
+    ) -> None:
         """Initialize the container and setup all managed dependencies.
 
         Args:
@@ -41,7 +43,9 @@ class DIContainer:
                             If provided, this will be passed to MultiJenkinsManager.
         """
         self._instances: Dict[Type[Any], Any] = {}
-        self.config = config or ConfigFactory.create_config(config_file=config_file_path)
+        self.config = config or ConfigFactory.create_config(
+            config_file=config_file_path
+        )
         self.config_file_path = config_file_path
         self._setup_managers()
 
@@ -81,6 +85,7 @@ class DIContainer:
 
         # Set the global instance
         from .multi_jenkins_manager import set_multi_jenkins_manager
+
         set_multi_jenkins_manager(multi_jenkins_manager)
         self._instances[JenkinsClient] = jenkins_client
         self._instances[CacheManager] = cache_manager

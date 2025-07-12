@@ -497,12 +497,12 @@ class SubBuildDiscoverer:
         if (current_build_job_name, current_build_number) in visited:
             return
         visited.add((current_build_job_name, current_build_number))
-        
+
         # Try different discovery methods in order of preference
         discovered_children = self._discover_all_children(
             current_build_job_name, current_build_number
         )
-        
+
         # Process discovered children
         self._process_discovered_children(
             discovered_children,
@@ -514,34 +514,40 @@ class SubBuildDiscoverer:
             parent_job_name_for_children,
             parent_build_number_for_children,
         )
-    
+
     def _discover_all_children(
         self, job_name: str, build_number: int
     ) -> List[Tuple[str, int]]:
         """Discover children using all available methods"""
         children = []
-        
+
         # Method 1: wfapi discovery (PRIMARY)
         try:
             wfapi_children = self._discover_children_via_wfapi(job_name, build_number)
             children.extend(wfapi_children)
         except Exception as e:
             logger.debug(f"wfapi discovery failed for {job_name}#{build_number}: {e}")
-        
-        # Method 2: Classic API discovery (SECONDARY) 
+
+        # Method 2: Classic API discovery (SECONDARY)
         try:
-            classic_children = self._discover_children_via_classic_api(job_name, build_number)
+            classic_children = self._discover_children_via_classic_api(
+                job_name, build_number
+            )
             children.extend(classic_children)
         except Exception as e:
-            logger.debug(f"Classic API discovery failed for {job_name}#{build_number}: {e}")
-        
+            logger.debug(
+                f"Classic API discovery failed for {job_name}#{build_number}: {e}"
+            )
+
         # Method 3: Tree API discovery (TERTIARY)
         try:
             tree_children = self._discover_children_via_tree_api(job_name, build_number)
             children.extend(tree_children)
         except Exception as e:
-            logger.debug(f"Tree API discovery failed for {job_name}#{build_number}: {e}")
-        
+            logger.debug(
+                f"Tree API discovery failed for {job_name}#{build_number}: {e}"
+            )
+
         # Deduplicate children
         seen = set()
         unique_children = []
@@ -549,44 +555,44 @@ class SubBuildDiscoverer:
             if child not in seen:
                 seen.add(child)
                 unique_children.append(child)
-        
+
         return unique_children
-    
+
     def _discover_children_via_wfapi(
         self, job_name: str, build_number: int
     ) -> List[Tuple[str, int]]:
         """Discover children via wfapi method"""
         children = []
-        
+
         if not self.connection.config.url:
             return children
-        
+
         base_url = self.connection.config.url.rstrip("/")
         api_job_path = JobNameParser.to_jenkins_api_path(job_name)
-        
+
         # Try wfapi/runs endpoint
         wfapi_runs_url = f"{base_url}/{api_job_path}/{build_number}/wfapi/runs"
-        
+
         response = self.connection.session.get(
             wfapi_runs_url, timeout=self.connection.config.timeout
         )
         response.raise_for_status()
         runs_data = response.json()
-        
+
         if isinstance(runs_data, list):
             for run_data in runs_data:
                 children.extend(self._extract_children_from_run_data(run_data))
-        
+
         return children
-    
+
     def _extract_children_from_run_data(self, run_data: Dict) -> List[Tuple[str, int]]:
         """Extract children from wfapi run data"""
         children = []
-        
+
         run_name = run_data.get("name")
         run_id = run_data.get("id")
         run_status = run_data.get("status")
-        
+
         if run_name and run_id and run_status != "NOT_EXECUTED":
             downstream_builds = run_data.get("downstreamBuilds", [])
             for downstream in downstream_builds:
@@ -595,63 +601,66 @@ class SubBuildDiscoverer:
                 if downstream_job and downstream_build:
                     normalized_job = JobNameParser.normalize_job_name(downstream_job)
                     children.append((normalized_job, int(downstream_build)))
-        
+
         return children
-    
+
     def _discover_children_via_classic_api(
         self, job_name: str, build_number: int
     ) -> List[Tuple[str, int]]:
         """Discover children via classic Jenkins API"""
         children = []
-        
+
         try:
             build_info = self.connection.client.get_build_info(
                 job_name, build_number, depth=1
             )
         except Exception:
             return children
-        
+
         # Check actions for triggered builds
         for action in build_info.get("actions", []):
             if (
                 action
                 and "_class" in action
-                and "hudson.plugins.promoted_builds.BuildInfoExporterAction" in action["_class"]
+                and "hudson.plugins.promoted_builds.BuildInfoExporterAction"
+                in action["_class"]
             ):
                 for triggered_build in action.get("triggeredBuilds", []):
-                    child_job_name = triggered_build.get("projectName") or triggered_build.get("jobName")
+                    child_job_name = triggered_build.get(
+                        "projectName"
+                    ) or triggered_build.get("jobName")
                     child_build_number = triggered_build.get("buildNumber")
                     if child_job_name and child_build_number:
                         children.append((child_job_name, child_build_number))
-        
+
         # Check subBuilds field
         for sub_build_data in build_info.get("subBuilds", []):
             child_job_name = sub_build_data.get("jobName")
             child_build_number = sub_build_data.get("buildNumber")
             if child_job_name and child_build_number:
                 children.append((child_job_name, child_build_number))
-        
+
         return children
-    
+
     def _discover_children_via_tree_api(
         self, job_name: str, build_number: int
     ) -> List[Tuple[str, int]]:
         """Discover children via Tree API"""
         children = []
-        
+
         try:
             base_url = self.connection.config.url.rstrip("/")
             api_job_path = JobNameParser.to_jenkins_api_path(job_name)
-            
+
             api_url = f"{base_url}/{api_job_path}/{build_number}/api/json"
             params = {"tree": "actions[nodes[actions[description]]]"}
-            
+
             response = self.connection.session.get(
                 api_url, params=params, timeout=self.connection.config.timeout
             )
             response.raise_for_status()
             data = response.json()
-            
+
             # Parse tree API response
             for top_level_action in data.get("actions", []):
                 if "nodes" in top_level_action:
@@ -663,16 +672,18 @@ class SubBuildDiscoverer:
                                 if match:
                                     job_path_raw = match.group(1).strip()
                                     build_num = int(match.group(2))
-                                    
+
                                     tree_job_name = job_path_raw.replace(" » ", "/")
-                                    tree_job_name = JobNameParser.normalize_job_name(tree_job_name)
+                                    tree_job_name = JobNameParser.normalize_job_name(
+                                        tree_job_name
+                                    )
                                     children.append((tree_job_name, build_num))
-        
+
         except Exception:
             pass
-        
+
         return children
-    
+
     def _process_discovered_children(
         self,
         children: List[Tuple[str, int]],
@@ -688,9 +699,9 @@ class SubBuildDiscoverer:
         for child_job, child_build in children:
             if not child_job:
                 continue
-            
+
             status, url = self._get_build_status_and_url(child_job, child_build)
-            
+
             sub_build = SubBuild(
                 job_name=child_job,
                 build_number=child_build,
@@ -701,7 +712,7 @@ class SubBuildDiscoverer:
                 depth=current_depth,
             )
             all_sub_builds_list.append(sub_build)
-            
+
             # Recurse to find children of this sub-build
             if (child_job, child_build) not in visited:
                 self._collect_all_sub_builds(
@@ -713,7 +724,6 @@ class SubBuildDiscoverer:
                     current_job_name,
                     current_build_number,
                 )
-
 
     def _get_build_status_and_url(
         self, job_name: str, build_number: int
@@ -733,7 +743,6 @@ class SubBuildDiscoverer:
         except Exception as e:
             logger.debug(f"Could not get status for {job_name} #{build_number}: {e}")
             return "UNKNOWN", None
-
 
     def list_pipeline_runs(self, parent: Build) -> List[SubBuild]:
         """List pipeline runs using wfapi/runs endpoint (from jenkins_client_old.py)"""

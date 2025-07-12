@@ -66,7 +66,7 @@ class JobNameParser:
         Convert job name to Jenkins API path format
 
         Args:
-            job_name: Normalized job name 
+            job_name: Normalized job name
 
         Returns:
             Jenkins API path format
@@ -75,7 +75,6 @@ class JobNameParser:
         if not normalized:
             return ""
 
-        
         # Split by / but be careful not to split on encoded slashes (%2F)
         parts = normalized.split("/")
         api_parts = []

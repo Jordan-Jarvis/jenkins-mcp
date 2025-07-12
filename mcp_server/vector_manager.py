@@ -4,9 +4,14 @@ import os
 from typing import Any, Dict, List, Optional
 
 from qdrant_client import QdrantClient
-from qdrant_client.models import (Distance, FieldCondition,
-                                  Filter, MatchValue, PointStruct,
-                                  VectorParams)
+from qdrant_client.models import (
+    Distance,
+    FieldCondition,
+    Filter,
+    MatchValue,
+    PointStruct,
+    VectorParams,
+)
 from sentence_transformers import SentenceTransformer
 
 from .base import Build, VectorChunk

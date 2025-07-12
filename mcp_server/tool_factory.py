@@ -21,6 +21,7 @@ from .tools.logs import FilterErrorsTool, LogContextTool
 from .tools.ripgrep_tool import NavigateLogTool, RipgrepSearchTool
 from .tools.search import SemanticSearchTool
 from .tools.subbuilds import SubBuildTraversalTool
+
 # Import all tool classes
 from .tools.trigger import AsyncBuildTool, TriggerBuildTool
 

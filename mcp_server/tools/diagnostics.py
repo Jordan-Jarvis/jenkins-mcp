@@ -135,16 +135,20 @@ class DiagnoseBuildFailureTool(JenkinsOperationTool):
 
         for child_sb in direct_children:
             # Generate display text with proper indentation using configuration
-            display_config = self.config.config.display.get('hierarchy', {})
-            indent_spaces = display_config.get('indent_spaces_per_depth', 4)
-            connector = display_config.get('connector_symbol', '└── ')
-            prefix_adjustment = display_config.get('prefix_adjustment', 2)
-            
-            status_config = self.config.config.display.get('status_display', {})
-            status_placeholder = status_config.get('unknown_placeholder', 'UNKNOWN')
-            url_placeholder = status_config.get('url_placeholder', 'No URL')
-            
-            prefix_spaces = ((child_sb.depth - 1) * indent_spaces + prefix_adjustment) if child_sb.depth > 0 else 0
+            display_config = self.config.config.display.get("hierarchy", {})
+            indent_spaces = display_config.get("indent_spaces_per_depth", 4)
+            connector = display_config.get("connector_symbol", "└── ")
+            prefix_adjustment = display_config.get("prefix_adjustment", 2)
+
+            status_config = self.config.config.display.get("status_display", {})
+            status_placeholder = status_config.get("unknown_placeholder", "UNKNOWN")
+            url_placeholder = status_config.get("url_placeholder", "No URL")
+
+            prefix_spaces = (
+                ((child_sb.depth - 1) * indent_spaces + prefix_adjustment)
+                if child_sb.depth > 0
+                else 0
+            )
             prefix = " " * prefix_spaces
 
             status_str = child_sb.status or status_placeholder
@@ -152,8 +156,8 @@ class DiagnoseBuildFailureTool(JenkinsOperationTool):
             display_text = f"{prefix}{connector}Job: {child_sb.job_name}, Build: #{child_sb.build_number}, Status: {status_str}, URL: {url_str}"
 
             # Create child node
-            failure_indicator = status_config.get('failure_indicator', 'FAILURE')
-            
+            failure_indicator = status_config.get("failure_indicator", "FAILURE")
+
             child_node = {
                 "job_name": child_sb.job_name,
                 "build_number": child_sb.build_number,
@@ -283,38 +287,40 @@ class DiagnoseBuildFailureTool(JenkinsOperationTool):
         params = self._parse_and_normalize_inputs(kwargs)
         if "error" in params:
             return params
-        
+
         # Step 2: Initialize result structure
         result = self._initialize_result_structure(params)
-        
+
         # Step 3: Get build information
         build_info = self._get_build_information(params, result)
         if build_info is None:
             return result
-        
+
         # Step 4: Check if we should skip successful builds
-        if self._should_skip_build(build_info, params["skip_successful_builds"], result):
+        if self._should_skip_build(
+            build_info, params["skip_successful_builds"], result
+        ):
             return result
-        
+
         # Step 5: Process build hierarchy and logs
         self._process_build_analysis(params, build_info, result)
-        
+
         return result
-    
+
     def _parse_and_normalize_inputs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
         """Parse and normalize input parameters"""
         job_name = kwargs["job_name"]
         build_number = kwargs["build_number"]
         jenkins_url = kwargs.get("jenkins_url")
         skip_successful_builds = kwargs.get("skip_successful_builds", True)
-        
+
         # Store original values
         original_values = {
             "job_name": job_name,
             "build_number": build_number,
             "jenkins_url": jenkins_url,
         }
-        
+
         # Extract from URL if needed
         if jenkins_url and ("/job/" in jenkins_url or "%2F" in jenkins_url):
             extracted_job, extracted_build = JobNameParser.extract_from_url(jenkins_url)
@@ -326,11 +332,13 @@ class DiagnoseBuildFailureTool(JenkinsOperationTool):
                 logger.info(
                     f"Extracted from URL: job='{job_name}', build={build_number}, base_url='{jenkins_url}'"
                 )
-        
+
         # Normalize job name
         job_name = JobNameParser.normalize_job_name(job_name)
-        logger.info(f"Normalized job name: '{original_values['job_name']}' -> '{job_name}'")
-        
+        logger.info(
+            f"Normalized job name: '{original_values['job_name']}' -> '{job_name}'"
+        )
+
         # Resolve Jenkins instance
         try:
             instance_id = self.resolve_jenkins_instance(jenkins_url)
@@ -343,7 +351,7 @@ class DiagnoseBuildFailureTool(JenkinsOperationTool):
                 "error": f"Jenkins instance resolution failed: {str(e)}",
                 "instructions": self.get_instance_instructions(),
             }
-        
+
         return {
             "job_name": job_name,
             "build_number": build_number,
@@ -352,7 +360,7 @@ class DiagnoseBuildFailureTool(JenkinsOperationTool):
             "instance_id": instance_id,
             "original_input": original_values,
         }
-    
+
     def _initialize_result_structure(self, params: Dict[str, Any]) -> Dict[str, Any]:
         """Initialize the result structure"""
         return {
@@ -376,42 +384,47 @@ class DiagnoseBuildFailureTool(JenkinsOperationTool):
                 "high_value_chunks": 0,
             },
         }
-    
-    def _get_build_information(self, params: Dict[str, Any], result: Dict[str, Any]) -> Optional[Build]:
+
+    def _get_build_information(
+        self, params: Dict[str, Any], result: Dict[str, Any]
+    ) -> Optional[Build]:
         """Get build information from Jenkins"""
         try:
             jenkins_client = self.get_jenkins_client(params["instance_id"])
             build_info_dict = jenkins_client.get_build_info_dict(
                 params["job_name"], params["build_number"]
             )
-            
+
             build_url = build_info_dict.get("url")
             build_status = build_info_dict.get(
-                "result", "IN_PROGRESS" if build_info_dict.get("building") else "UNKNOWN"
+                "result",
+                "IN_PROGRESS" if build_info_dict.get("building") else "UNKNOWN",
             )
-            
+
             result["overall_status_from_jenkins"] = build_status
-            
+
             return Build(
                 job_name=params["job_name"],
                 build_number=params["build_number"],
                 status=build_status,
                 url=build_url,
             )
-            
+
         except Exception as e:
             result["overall_status_from_jenkins"] = "ERROR_FETCHING_STATUS"
             result["log_analysis_status"] = "PREREQ_ERROR"
             result["errors"].append(f"Failed to fetch build status: {str(e)}")
-            result["sub_build_information"]["guidance"] = (
-                "Could not retrieve main build status, sub-build analysis aborted."
-            )
+            result["sub_build_information"][
+                "guidance"
+            ] = "Could not retrieve main build status, sub-build analysis aborted."
             result["sub_build_information"]["errors"].append(
                 f"Main build status fetch failed: {str(e)}"
             )
             return None
-    
-    def _should_skip_build(self, build: Build, skip_successful: bool, result: Dict[str, Any]) -> bool:
+
+    def _should_skip_build(
+        self, build: Build, skip_successful: bool, result: Dict[str, Any]
+    ) -> bool:
         """Check if build should be skipped based on success status"""
         if skip_successful and build.status == "SUCCESS":
             result["log_analysis_status"] = "SKIPPED_SUCCESS"
@@ -425,31 +438,33 @@ class DiagnoseBuildFailureTool(JenkinsOperationTool):
             ]
             return True
         return False
-    
-    def _process_build_analysis(self, params: Dict[str, Any], build: Build, result: Dict[str, Any]):
+
+    def _process_build_analysis(
+        self, params: Dict[str, Any], build: Build, result: Dict[str, Any]
+    ):
         """Process the main build analysis including hierarchy and logs"""
         # Get jenkins client for sub-build discovery
         jenkins_client = self.get_jenkins_client(params["instance_id"])
-        
+
         # Get sub-build information
-        sub_build_info = self._get_sub_build_information(
-            build, jenkins_client
-        )
+        sub_build_info = self._get_sub_build_information(build, jenkins_client)
         result["sub_build_information"] = sub_build_info
-        
+
         # Build hierarchy for analysis - extract all builds from the tree
         hierarchy_dicts = self._flatten_build_tree(sub_build_info["build_tree"])
-        
+
         # Convert hierarchy dictionaries to Build objects for processing
         hierarchy_builds = []
         for build_dict in hierarchy_dicts:
-            hierarchy_builds.append(Build(
-                job_name=build_dict["job_name"],
-                build_number=build_dict["build_number"],
-                status=build_dict.get("status", "UNKNOWN"),
-                url=build_dict.get("url", "")
-            ))
-        
+            hierarchy_builds.append(
+                Build(
+                    job_name=build_dict["job_name"],
+                    build_number=build_dict["build_number"],
+                    status=build_dict.get("status", "UNKNOWN"),
+                    url=build_dict.get("url", ""),
+                )
+            )
+
         # Process logs
         try:
             log_processor = StreamingLogProcessor()
@@ -458,25 +473,28 @@ class DiagnoseBuildFailureTool(JenkinsOperationTool):
                 log_processor,
                 jenkins_client,
                 params["skip_successful_builds"],
-                result
+                result,
             )
             result["context_stats"]["chunks_analyzed"] = len(log_chunks)
-            
+
             # Generate analysis components
-            result["build_summary"] = self._generate_build_summary(build, hierarchy_builds)
+            result["build_summary"] = self._generate_build_summary(
+                build, hierarchy_builds
+            )
             result["semantic_search_highlights"] = self._generate_semantic_highlights(
                 log_chunks, self.vector_manager, build
             )
             result["error_analysis"] = self._extract_key_failure_patterns(log_chunks)
-            result["recommendations"] = self._generate_recommendations(hierarchy_builds, log_chunks)
-            
+            result["recommendations"] = self._generate_recommendations(
+                hierarchy_builds, log_chunks
+            )
+
             result["log_analysis_status"] = "COMPLETED"
-            
+
         except Exception as e:
             result["log_analysis_status"] = "ERROR"
             result["errors"].append(f"Log processing failed: {str(e)}")
             logger.error(f"Log processing error: {e}")
-
 
     def _generate_build_summary(self, root_build: Build, hierarchy: List[Build]) -> str:
         """Generate concise build summary"""
@@ -506,7 +524,7 @@ Primary Failure Points:
             summary += failure_template.format(
                 job_name=build.job_name,
                 build_number=build.build_number,
-                status=build.status
+                status=build.status,
             )
 
         if len(failed_builds) > max_failures:
@@ -543,7 +561,11 @@ Primary Failure Points:
 
                     for result in results:
                         content = result.get("payload", {}).get("content", "")
-                        if content and len(content) > self.config.config.semantic_search.min_content_length:
+                        if (
+                            content
+                            and len(content)
+                            > self.config.config.semantic_search.min_content_length
+                        ):
                             job_name = result.get("payload", {}).get(
                                 "job_name", "unknown"
                             )
@@ -552,7 +574,9 @@ Primary Failure Points:
                             )
                             score = result.get("score", 0)
 
-                            preview_length = self.config.config.semantic_search.max_content_preview
+                            preview_length = (
+                                self.config.config.semantic_search.max_content_preview
+                            )
                             highlight = f"🔍 {job_name} #{build_num} (relevance: {score:.2f})\n{content[:preview_length]}..."
                             highlights.append(highlight)
 
@@ -560,7 +584,7 @@ Primary Failure Points:
                     logger.debug(f"Search failed for '{query}': {e}")
                     continue
 
-            return highlights[:self.config.config.semantic_search.max_total_highlights]
+            return highlights[: self.config.config.semantic_search.max_total_highlights]
 
         except Exception as e:
             logger.warning(f"Semantic search failed: {e}")
@@ -569,9 +593,11 @@ Primary Failure Points:
     def _extract_key_failure_patterns(self, chunks: List) -> List[str]:
         """Fallback: extract key failure patterns from chunks"""
         patterns = []
-        
+
         # Get configuration values
-        max_chunks = self.config.config.build_processing.chunks.get('max_chunks_for_analysis', 10)
+        max_chunks = self.config.config.build_processing.chunks.get(
+            "max_chunks_for_analysis", 10
+        )
         failure_patterns = self.config.get_failure_patterns()
         max_patterns = self.config.config.failure_patterns.max_fallback_patterns
         max_preview = self.config.config.failure_patterns.max_pattern_preview
@@ -596,14 +622,14 @@ Primary Failure Points:
             return ["✅ No build failures detected in this pipeline"]
 
         # Analyze failure patterns across chunks
-        max_content_chunks = self.config.config.build_processing.chunks.get('max_chunks_for_content', 20)
-        all_content = " ".join(
-            [c.content.lower() for c in chunks[:max_content_chunks]]
+        max_content_chunks = self.config.config.build_processing.chunks.get(
+            "max_chunks_for_content", 20
         )
+        all_content = " ".join([c.content.lower() for c in chunks[:max_content_chunks]])
 
         # Generate pattern-based recommendations
         recommendations = self._get_pattern_recommendations(all_content)
-        
+
         # Add priority guidance
         priority_rec = self._get_priority_recommendation(failed_builds)
         if priority_rec:
@@ -612,21 +638,21 @@ Primary Failure Points:
         # Add investigation guidance
         recommendations.append(self._get_investigation_guidance())
 
-        return recommendations[:self.config.config.recommendations.max_recommendations]
+        return recommendations[: self.config.config.recommendations.max_recommendations]
 
     def _get_pattern_recommendations(self, content: str) -> List[str]:
         """Extract recommendations based on error patterns in content"""
         recommendations = []
-        
+
         # Get pattern recommendations from configuration
         pattern_configs = self.config.get_pattern_recommendations()
-        
+
         for _, pattern_config in pattern_configs.items():
             if self._matches_pattern_conditions(content, pattern_config.conditions):
                 recommendations.append(pattern_config.message)
-        
+
         return recommendations
-    
+
     def _matches_pattern_conditions(self, content: str, conditions: List) -> bool:
         """Check if content matches pattern conditions"""
         for condition in conditions:
@@ -643,22 +669,20 @@ Primary Failure Points:
     def _get_priority_recommendation(self, failed_builds: List[Build]) -> Optional[str]:
         """Generate priority recommendation based on failed builds"""
         priority_config = self.config.config.recommendations.priority_jobs
-        pattern = priority_config.get('vault_app_pattern', 'vault-app')
-        max_builds = priority_config.get('max_priority_builds', 3)
-        message_template = priority_config.get('priority_message_template', '')
-        
-        deepest_failures = [
-            b for b in failed_builds
-            if pattern in b.job_name
-        ]
-        
+        pattern = priority_config.get("vault_app_pattern", "vault-app")
+        max_builds = priority_config.get("max_priority_builds", 3)
+        message_template = priority_config.get("priority_message_template", "")
+
+        deepest_failures = [b for b in failed_builds if pattern in b.job_name]
+
         if deepest_failures:
-            app_builds = ", ".join([f"#{b.build_number}" for b in deepest_failures[:max_builds]])
-            return message_template.format(
-                job_pattern=pattern,
-                build_numbers=app_builds
+            app_builds = ", ".join(
+                [f"#{b.build_number}" for b in deepest_failures[:max_builds]]
             )
-        
+            return message_template.format(
+                job_pattern=pattern, build_numbers=app_builds
+            )
+
         return None
 
     def _get_investigation_guidance(self) -> str:
@@ -690,9 +714,13 @@ Primary Failure Points:
             return all_chunks
 
         # Process builds in parallel batches to avoid overwhelming Jenkins
-        max_batch_size = self.config.config.build_processing.parallel.get('max_batch_size', 5)
-        max_workers = self.config.config.build_processing.parallel.get('max_workers', 5)
-        _ = min(max_batch_size, len(builds_to_process))  # batch_size calculated but not used
+        max_batch_size = self.config.config.build_processing.parallel.get(
+            "max_batch_size", 5
+        )
+        max_workers = self.config.config.build_processing.parallel.get("max_workers", 5)
+        _ = min(
+            max_batch_size, len(builds_to_process)
+        )  # batch_size calculated but not used
 
         with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
             # Create futures for all builds
