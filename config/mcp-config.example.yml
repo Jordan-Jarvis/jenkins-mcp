@@ -80,11 +80,12 @@ settings:
 # Vector Search Configuration
 vector:
   disable_vector_search: false
-  qdrant_host: "http://localhost:6335"
+  host: "http://localhost:6333"
   collection_name: "jenkins-logs"
   embedding_model: "all-MiniLM-L6-v2"
-  chunk_size: 500
-  chunk_overlap: 50
+  chunk_size: 50
+  chunk_overlap: 5
+  top_k_default: 5
   timeout: 30
 
 # Cache Configuration  

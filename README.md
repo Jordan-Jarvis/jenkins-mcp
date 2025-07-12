@@ -40,19 +40,33 @@ The MCP server uses the Jenkins Tree API and wfapi for reliable sub-build discov
 
 ### Installation
 
-#### Option 1: Install from PyPI (Recommended)
+#### Option 1: Development Installation (Recommended)
 
 ```bash
-# Install the latest stable release
+# Clone repository
+git clone <repository-url>
+cd jenkins-mcp
+
+# Install dependencies
+python3 -m pip install -e .
+
+# Start development environment
+./scripts/start_dev_environment.sh
+```
+
+#### Option 2: Install from PyPI (Coming Soon)
+
+```bash
+# Install the latest stable release (will be available in future release)
 pip install jenkins-mcp-server
 
 # Run immediately with your Jenkins credentials
 jenkins-mcp-server
 ```
 
-The PyPI package includes all necessary diagnostic configurations bundled - no additional setup required beyond Jenkins credentials.
+The PyPI package will include all necessary diagnostic configurations bundled - no additional setup required beyond Jenkins credentials.
 
-#### Option 2: Development Installation
+#### Option 3: Docker Installation (Production)
 
 ```bash
 # Clone repository
@@ -92,11 +106,13 @@ settings:
 # Vector search configuration (optional)
 vector:
   disable_vector_search: false
-  qdrant_host: "http://localhost:6333"
+  host: "http://localhost:6333"
   collection_name: "jenkins-logs"
   embedding_model: "all-MiniLM-L6-v2"
-  chunk_size: 500
-  chunk_overlap: 50
+  chunk_size: 50
+  chunk_overlap: 5
+  top_k_default: 5
+  timeout: 30
 
 # Cache configuration
 cache:
@@ -152,11 +168,12 @@ settings:
 # Vector search configuration
 vector:
   disable_vector_search: false
-  qdrant_host: "http://localhost:6333"
+  host: "http://localhost:6333"
   collection_name: "jenkins-logs"
   embedding_model: "all-MiniLM-L6-v2"
-  chunk_size: 500
-  chunk_overlap: 50
+  chunk_size: 50
+  chunk_overlap: 5
+  top_k_default: 5
   timeout: 30
 
 # Cache configuration
@@ -193,9 +210,13 @@ python3 -m mcp_server.server --config config/mcp-config.yml
 
 **Vector Search (AI-powered log analysis):**
 - `vector.disable_vector_search`: Set to `true` to disable vector features
-- `vector.qdrant_host`: Qdrant vector database URL (requires running Qdrant)
+- `vector.host`: Qdrant vector database URL (requires running Qdrant)
 - `vector.collection_name`: Name for the log embeddings collection
 - `vector.embedding_model`: SentenceTransformer model for text embeddings
+- `vector.chunk_size`: Text chunk size for vectorization (default: 50)
+- `vector.chunk_overlap`: Overlap between chunks (default: 5)
+- `vector.top_k_default`: Default number of results to return (default: 5)
+- `vector.timeout`: Request timeout for Qdrant operations (default: 30)
 
 **Cache Management:**
 - `cache.cache_dir`: Directory for storing downloaded build logs
@@ -455,6 +476,41 @@ npx @modelcontextprotocol/inspector --cli -- python3 -m mcp_server.server \
   --tool-arg build_number=123 \
   --tool-arg jenkins_url=https://jenkins.example.com
 ```
+
+## Troubleshooting
+
+### Configuration Issues
+
+**Problem**: `ConfigurationError: Transport must be one of: stdio, streamable-http, sse`  
+**Solution**: Use `streamable-http` instead of `http` in configuration files.
+
+**Problem**: `ModuleNotFoundError: No module named 'mcp'`  
+**Solution**: Install missing dependencies: `pip install modelcontextprotocol`
+
+**Problem**: Vector search not working  
+**Solution**: 
+1. Check if Qdrant is running: `curl http://localhost:6333/health`
+2. Start Qdrant: `./scripts/start_dev_environment.sh`
+3. Or disable vector search: `vector.disable_vector_search: true` in config
+
+### Docker Issues
+
+**Problem**: Qdrant connection failures in Docker  
+**Solution**: Use `QDRANT_HOST=http://qdrant:6333` (not localhost) in Docker environment.
+
+**Problem**: Jenkins connection timeouts  
+**Solution**: 
+1. Verify Jenkins URL is accessible from container
+2. Check firewall settings
+3. Increase timeout in configuration: `timeout: 60`
+
+### Authentication Issues
+
+**Problem**: Jenkins authentication failures  
+**Solution**:
+1. Generate new API token from Jenkins user profile
+2. Verify username format (usually email address)
+3. Test credentials: `curl -u username:token https://jenkins.example.com/api/json`
 
 ## Contributing
 

@@ -75,13 +75,13 @@ class ServerConfig:
     """MCP Server configuration"""
 
     name: str = "Jenkins MCP Server"
-    version: str = "0.1.0"
+    version: str = "1.0.0"
     transport: str = "stdio"
     log_level: str = "INFO"
     log_file: Optional[str] = None
 
     def __post_init__(self):
-        valid_transports = ["stdio", "http", "sse"]
+        valid_transports = ["stdio", "streamable-http", "sse"]
         if self.transport not in valid_transports:
             raise ConfigurationError(f"Transport must be one of: {valid_transports}")
         valid_log_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]

@@ -60,8 +60,8 @@ python3 scripts/validate_diagnostic_config.py
 ### Server Configuration
 
 - `name`: Server name (default: Jenkins MCP Server)
-- `version`: Server version (default: 0.1.0)
-- `transport`: MCP transport protocol (default: stdio)
+- `version`: Server version (default: 1.0.0)
+- `transport`: MCP transport protocol - stdio, streamable-http, or sse (default: stdio)
 - `log_level`: Logging level (default: INFO)
 - `log_file`: Optional log file path (default: null - log to stderr)
 

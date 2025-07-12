@@ -36,7 +36,7 @@ def create_server(config=None, config_file_path=None) -> FastMCP:
     tools = tool_factory.create_tools()
 
     # Create FastMCP server
-    mcp = FastMCP("Jenkins MCP Server", version="0.1.0")
+    mcp = FastMCP("Jenkins MCP Server", version="1.0.0")
 
     # Get multi-Jenkins manager for roots support
     multi_jenkins_manager = container.get_multi_jenkins_manager()
