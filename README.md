@@ -408,7 +408,7 @@ python3 -m black .
 
 ## 📝 **License**
 
-MIT License - build amazing things with Jenkins and AI!
+GPL v3 License - build amazing things with Jenkins and AI!
 
 ---
 
