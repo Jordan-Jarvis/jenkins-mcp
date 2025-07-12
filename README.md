@@ -95,6 +95,63 @@ Add to `~/.claude_desktop_config.json`:
 
 **That's it!** Your AI assistant now has enterprise-grade Jenkins capabilities.
 
+## 💬 **Basic Usage Guide**
+
+Once connected to your AI assistant (Claude, etc.), you can start diagnosing build failures immediately:
+
+### 🎯 **Simple Build Diagnosis**
+
+```
+Hello, will you help me diagnose why this build failed? 
+https://jenkins.company.com/job/MyApp/job/feature-branch/123/
+```
+
+**⚠️ Important**: Always provide the **full Jenkins URL** including:
+- Complete hostname (enables multi-Jenkins routing)
+- Full job path with folders
+- Build number
+
+### 🔍 **Common Usage Patterns**
+
+```
+# Basic failure analysis
+"Can you analyze this failed build? https://jenkins.company.com/job/api-service/456/"
+
+# Deep sub-build investigation  
+"This pipeline has nested failures, can you find the root cause? https://jenkins.company.com/job/monorepo/job/main/789/"
+
+# Search for similar issues
+"Find similar authentication failures in recent builds"
+
+# Get specific log sections
+"Show me the test failure logs from lines 2000-2500 in this build: https://jenkins.company.com/job/tests/321/"
+```
+
+### 🌐 **Multi-Jenkins Support**
+
+The server automatically routes requests based on the URL:
+
+```
+# Production Jenkins
+"Analyze: https://jenkins-prod.company.com/job/deploy/456/"
+
+# Development Jenkins  
+"Debug: https://jenkins-dev.company.com/job/feature/123/"
+
+# EU Jenkins instance
+"Check: https://jenkins-eu.company.com/job/service/789/"
+```
+
+**🔄 URL Resolution**: The MCP server matches URLs to your configured Jenkins instances and uses the appropriate credentials automatically.
+
+### 📊 **What You'll Get**
+
+- **Failure Analysis**: AI-powered root cause identification
+- **Sub-Build Hierarchy**: Navigate complex pipeline structures  
+- **Smart Recommendations**: Actionable fixes based on your tech stack
+- **Relevant Log Sections**: Key failure points highlighted
+- **Similar Issue Search**: Find patterns across build history
+
 ## 🛠️ **Advanced Features**
 
 ### 🔍 **AI-Powered Build Diagnostics**
