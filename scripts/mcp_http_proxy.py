@@ -142,7 +142,10 @@ async def initialize():
             {
                 "protocolVersion": "2024-11-05",
                 "capabilities": {"tools": {}, "resources": {}},
-                "clientInfo": {"name": "jenkins-mcp-enterprise-proxy", "version": "1.0.0"},
+                "clientInfo": {
+                    "name": "jenkins-mcp-enterprise-proxy",
+                    "version": "1.0.0",
+                },
             },
         )
         return response
