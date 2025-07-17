@@ -41,7 +41,7 @@ class MultiJenkinsManager:
     def __init__(self, config_file: Optional[str] = None):
         # Auto-detect config file if not provided
         if config_file is None:
-            # Get the project root directory (parent of mcp_server)
+            # Get the project root directory (parent of jenkins_mcp_enterprise)
             project_root = Path(__file__).parent.parent
 
             # Try new unified config first, then fallback to old config

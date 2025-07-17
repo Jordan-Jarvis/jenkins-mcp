@@ -66,7 +66,7 @@ class TestPerformance:
         """Test that tools respond within acceptable time limits"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Test async build trigger (should be very fast)
             start_time = time.time()
             result = await client.call_tool(
@@ -115,7 +115,7 @@ class TestPerformance:
         """Test concurrent tool execution performance"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Execute multiple async build triggers concurrently
             start_time = time.time()
 
@@ -174,7 +174,7 @@ class TestPerformance:
         """Test performance with larger log requests"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Test retrieving larger chunks of logs
             start_time = time.time()
 
@@ -206,7 +206,7 @@ class TestPerformance:
         """Test performance of repeated calls (caching effects)"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # First call (cold)
             start_time = time.time()
             result1 = await client.call_tool(
@@ -265,7 +265,7 @@ class TestPerformance:
         """Test performance of comprehensive diagnosis"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Diagnosis is the most complex operation
             start_time = time.time()
 
@@ -299,7 +299,7 @@ class TestPerformance:
         """Test tool discovery performance"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Tool listing should be very fast
             start_time = time.time()
             tools = await client.list_tools()
@@ -326,7 +326,7 @@ class TestPerformance:
         """Test that memory usage remains stable under load"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Perform many operations to test for memory leaks
             start_time = time.time()
 
@@ -375,7 +375,7 @@ class TestPerformance:
         """Test vector search performance"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Vector search performance test
             start_time = time.time()
 
@@ -407,7 +407,7 @@ class TestPerformance:
         """Test error filtering performance"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Error filtering should be fast
             start_time = time.time()
 

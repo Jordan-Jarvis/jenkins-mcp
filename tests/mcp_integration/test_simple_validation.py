@@ -56,14 +56,14 @@ class TestSimpleValidation:
     @pytest.mark.asyncio
     async def test_tool_validator_with_real_jenkins(self):
         """Test tool validator with real Jenkins credentials"""
-        from mcp_server.tool_validator import validate_all_tools
+        from jenkins_mcp_enterprise.tool_validator import validate_all_tools
 
         # Run with real Jenkins
         success = validate_all_tools(use_real_jenkins=True)
         assert success, "Tool validation with real Jenkins should succeed"
 
     @pytest.mark.asyncio
-    async def test_mcp_server_startup_without_vector_db(self, simple_jenkins):
+    async def test_jenkins_mcp_enterprise_startup_without_vector_db(self, simple_jenkins):
         """Test MCP server startup with minimal configuration (no vector DB)"""
         cache_dir = tempfile.mkdtemp(prefix="test-mcp-simple-")
 
@@ -81,7 +81,7 @@ class TestSimpleValidation:
             }
 
             # Start server process with timeout
-            cmd = [sys.executable, "-m", "mcp_server.server"]
+            cmd = [sys.executable, "-m", "jenkins_mcp_enterprise.server"]
             process = subprocess.Popen(
                 cmd,
                 stdin=subprocess.PIPE,

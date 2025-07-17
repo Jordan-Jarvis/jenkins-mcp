@@ -12,7 +12,7 @@ The Jenkins MCP server now uses a configurable diagnostic parameters system to e
 ## Configuration File Location
 
 - Primary: `/config/diagnostic-parameters.yml`
-- Module: `mcp_server/diagnostic_config/`
+- Module: `jenkins_mcp_enterprise/diagnostic_config/`
 
 ## Key Configuration Sections
 
@@ -47,7 +47,7 @@ The Jenkins MCP server now uses a configurable diagnostic parameters system to e
 The diagnostic parameters are automatically loaded from the bundled configuration:
 
 ```python
-from mcp_server.diagnostic_config import get_diagnostic_config
+from jenkins_mcp_enterprise.diagnostic_config import get_diagnostic_config
 
 config = get_diagnostic_config()
 search_queries = config.get_semantic_search_queries()
@@ -60,12 +60,12 @@ recommendations = config.get_pattern_recommendations()
 #### Method 1: Environment Variable
 ```bash
 export JENKINS_MCP_DIAGNOSTIC_CONFIG="/path/to/custom-diagnostic-parameters.yml"
-python3 -m mcp_server.server
+python3 -m jenkins_mcp_enterprise.server
 ```
 
 #### Method 2: Command Line Argument
 ```bash
-python3 -m mcp_server.server --diagnostic-config /path/to/custom-diagnostic-parameters.yml
+python3 -m jenkins_mcp_enterprise.server --diagnostic-config /path/to/custom-diagnostic-parameters.yml
 ```
 
 #### Method 3: User Override Directory
@@ -93,7 +93,7 @@ All hard-coded values from the original `diagnose_build_failure` tool have been 
 ## Configuration Hot-Reload
 
 ```python
-from mcp_server.diagnostic_config import reload_diagnostic_config
+from jenkins_mcp_enterprise.diagnostic_config import reload_diagnostic_config
 reload_diagnostic_config()  # Reload without server restart
 ```
 

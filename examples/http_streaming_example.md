@@ -8,7 +8,7 @@ This example demonstrates how to use the Jenkins MCP server with HTTP streaming 
 
 ```bash
 # Start server with streamable-http transport (requires config file)
-python3 -m mcp_server.server --transport streamable-http --port 8000 --config config/mcp-config.yml
+python3 -m jenkins_mcp_enterprise.server --transport streamable-http --port 8000 --config config/mcp-config.yml
 ```
 
 ### Docker
@@ -23,7 +23,7 @@ docker run -p 8000:8000 \
   -v $(pwd)/config:/app/config \
   -e MCP_TRANSPORT=streamable-http \
   -e MCP_PORT=8000 \
-  jenkins-mcp-enterprise-server:latest \
+  jenkins_mcp_enterprise-server:latest \
   --config config/mcp-config.yml
 ```
 
@@ -34,7 +34,7 @@ docker run -p 8000:8000 \
 ```json
 {
   "mcpServers": {
-    "jenkins-mcp-enterprise-streaming": {
+    "jenkins_mcp_enterprise-streaming": {
       "type": "streamable-http",
       "url": "http://localhost:8000/mcp"
     }

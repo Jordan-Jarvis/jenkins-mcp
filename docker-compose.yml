@@ -2,7 +2,7 @@ services:
   # Vector database for semantic search
   qdrant:
     image: qdrant/qdrant:latest
-    container_name: jenkins-mcp-enterprise-qdrant
+    container_name: jenkins_mcp_enterprise-qdrant
     ports:
       - "6335:6333"  # HTTP API (changed to avoid conflict)
       - "6336:6334"  # gRPC API (changed to avoid conflict)
@@ -21,11 +21,11 @@ services:
       - mcp-net
 
   # Jenkins MCP Enterprise Server (Production)
-  jenkins-mcp-enterprise-server:
+  jenkins_mcp_enterprise-server:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: jenkins-mcp-enterprise-server
+    container_name: jenkins_mcp_enterprise-server
     environment:
       # Jenkins Configuration (Required)
       - JENKINS_URL=${JENKINS_URL:-https://your-jenkins-instance.com}
@@ -43,7 +43,7 @@ services:
       
       # Logging Configuration
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
-      - LOG_FILE=/app/logs/jenkins-mcp-enterprise.log
+      - LOG_FILE=/app/logs/jenkins_mcp_enterprise.log
       
       # MCP Server Configuration
       - MCP_TRANSPORT=stdio
@@ -59,24 +59,24 @@ services:
     networks:
       - mcp-net
     healthcheck:
-      test: ["CMD", "python3", "-c", "import mcp_server.server; print('Server importable')"]
+      test: ["CMD", "python3", "-c", "import jenkins_mcp_enterprise.server; print('Server importable')"]
       interval: 30s
       timeout: 10s
       retries: 3
 
   # HTTP Proxy for MCP Enterprise Server (Optional - for HTTP transport)
-  jenkins-mcp-enterprise-proxy:
+  jenkins_mcp_enterprise-proxy:
     build:
       context: .
       dockerfile: Dockerfile.proxy
-    container_name: jenkins-mcp-enterprise-proxy
+    container_name: jenkins_mcp_enterprise-proxy
     ports:
       - "8080:8080"
     environment:
-      - MCP_SERVER_HOST=jenkins-mcp-enterprise-server
+      - jenkins_mcp_enterprise_HOST=jenkins_mcp_enterprise-server
       - PROXY_PORT=8080
     depends_on:
-      - jenkins-mcp-enterprise-server
+      - jenkins_mcp_enterprise-server
     restart: unless-stopped
     networks:
       - mcp-net
@@ -84,11 +84,11 @@ services:
       - http-proxy  # Only start with --profile http-proxy
 
   # HTTP Streaming Server (Native HTTP transport)
-  jenkins-mcp-enterprise-http:
+  jenkins_mcp_enterprise-http:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: jenkins-mcp-enterprise-http
+    container_name: jenkins_mcp_enterprise-http
     ports:
       - "8000:8000"
     environment:
@@ -108,7 +108,7 @@ services:
       
       # Logging Configuration
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
-      - LOG_FILE=/app/logs/jenkins-mcp-enterprise.log
+      - LOG_FILE=/app/logs/jenkins_mcp_enterprise.log
       
       # MCP Server Configuration - HTTP Streaming
       - MCP_TRANSPORT=streamable-http

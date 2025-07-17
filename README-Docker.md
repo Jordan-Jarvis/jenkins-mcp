@@ -6,7 +6,7 @@ This directory contains Docker and Docker Compose configurations for running the
 
 ### 1. Start the Stack
 ```bash
-./start-jenkins-mcp-enterprise.sh
+./start-jenkins_mcp_enterprise.sh
 ```
 
 ### 2. Access Services
@@ -24,10 +24,10 @@ The Docker stack includes:
 ## Configuration Files
 
 - `docker-compose.mcp.yml` - Main Docker Compose configuration
-- `Dockerfile.jenkins-mcp-enterprise` - Jenkins MCP Enterprise server container
+- `Dockerfile.jenkins_mcp_enterprise` - Jenkins MCP Enterprise server container
 - `Dockerfile.mcp-proxy` - MCP proxy container
 - `mcpconfig.docker.json` - MCP proxy configuration for Docker
-- `start-jenkins-mcp-enterprise.sh` - Startup script
+- `start-jenkins_mcp_enterprise.sh` - Startup script
 
 ## Manual Commands
 
@@ -42,7 +42,7 @@ docker-compose -f docker-compose.mcp.yml up -d
 docker-compose -f docker-compose.mcp.yml logs -f
 
 # Specific service
-docker-compose -f docker-compose.mcp.yml logs -f jenkins-mcp-enterprise-server
+docker-compose -f docker-compose.mcp.yml logs -f jenkins_mcp_enterprise-server
 docker-compose -f docker-compose.mcp.yml logs -f mcp-proxy
 docker-compose -f docker-compose.mcp.yml logs -f qdrant
 ```
@@ -67,38 +67,38 @@ docker-compose -f docker-compose.mcp.yml down -v
 ### Install System Service
 ```bash
 # Copy service file
-sudo cp jenkins-mcp-enterprise.service /etc/systemd/system/
+sudo cp jenkins_mcp_enterprise.service /etc/systemd/system/
 
 # Reload systemd and enable service
 sudo systemctl daemon-reload
-sudo systemctl enable jenkins-mcp-enterprise.service
+sudo systemctl enable jenkins_mcp_enterprise.service
 
 # Start service
-sudo systemctl start jenkins-mcp-enterprise.service
+sudo systemctl start jenkins_mcp_enterprise.service
 ```
 
 ### Manage System Service
 ```bash
 # Check status
-sudo systemctl status jenkins-mcp-enterprise.service
+sudo systemctl status jenkins_mcp_enterprise.service
 
 # Start/stop/restart
-sudo systemctl start jenkins-mcp-enterprise.service
-sudo systemctl stop jenkins-mcp-enterprise.service
-sudo systemctl restart jenkins-mcp-enterprise.service
+sudo systemctl start jenkins_mcp_enterprise.service
+sudo systemctl stop jenkins_mcp_enterprise.service
+sudo systemctl restart jenkins_mcp_enterprise.service
 
 # View logs
-sudo journalctl -u jenkins-mcp-enterprise.service -f
+sudo journalctl -u jenkins_mcp_enterprise.service -f
 ```
 
 ### Uninstall System Service
 ```bash
 # Stop and disable service
-sudo systemctl stop jenkins-mcp-enterprise.service
-sudo systemctl disable jenkins-mcp-enterprise.service
+sudo systemctl stop jenkins_mcp_enterprise.service
+sudo systemctl disable jenkins_mcp_enterprise.service
 
 # Remove service file
-sudo rm /etc/systemd/system/jenkins-mcp-enterprise.service
+sudo rm /etc/systemd/system/jenkins_mcp_enterprise.service
 sudo systemctl daemon-reload
 ```
 
@@ -120,7 +120,7 @@ docker info
 docker-compose -f docker-compose.mcp.yml logs
 
 # Check individual container
-docker logs jenkins-mcp-enterprise-server
+docker logs jenkins_mcp_enterprise-server
 ```
 
 ### Configuration Issues
@@ -129,7 +129,7 @@ docker logs jenkins-mcp-enterprise-server
 python3 -c "import yaml; yaml.safe_load(open('config/mcp-config.yml'))"
 
 # Test MCP server manually
-docker run --rm -it jenkins-mcp-enterprise-server python3 -m mcp_server.server --help
+docker run --rm -it jenkins_mcp_enterprise-server python3 -m jenkins_mcp_enterprise.server --help
 ```
 
 ### Port Conflicts
@@ -154,4 +154,4 @@ Key environment variables in Docker Compose:
 
 ## Networking
 
-All services run on the `jenkins-mcp-enterprise-network` Docker network, allowing internal communication while exposing only necessary ports to the host.
+All services run on the `jenkins_mcp_enterprise-network` Docker network, allowing internal communication while exposing only necessary ports to the host.

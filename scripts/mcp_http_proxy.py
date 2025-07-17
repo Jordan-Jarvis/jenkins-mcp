@@ -31,23 +31,23 @@ app = FastAPI(
 class MCPStdioProxy:
     """Proxy that converts HTTP requests to MCP stdio communication"""
 
-    def __init__(self, mcp_server_command: list):
-        self.mcp_server_command = mcp_server_command
+    def __init__(self, jenkins_mcp_enterprise_command: list):
+        self.jenkins_mcp_enterprise_command = jenkins_mcp_enterprise_command
         self.process: Optional[subprocess.Popen] = None
         self.request_id_counter = 0
 
-    async def start_mcp_server(self):
+    async def start_jenkins_mcp_enterprise(self):
         """Start the MCP server process"""
         try:
             self.process = subprocess.Popen(
-                self.mcp_server_command,
+                self.jenkins_mcp_enterprise_command,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
                 bufsize=0,
             )
-            logger.info(f"Started MCP server: {' '.join(self.mcp_server_command)}")
+            logger.info(f"Started MCP server: {' '.join(self.jenkins_mcp_enterprise_command)}")
         except Exception as e:
             logger.error(f"Failed to start MCP server: {e}")
             raise
@@ -57,7 +57,7 @@ class MCPStdioProxy:
     ) -> Dict[str, Any]:
         """Send JSON-RPC request to MCP server"""
         if not self.process:
-            await self.start_mcp_server()
+            await self.start_jenkins_mcp_enterprise()
 
         self.request_id_counter += 1
         request = {
@@ -84,13 +84,13 @@ class MCPStdioProxy:
         except Exception as e:
             logger.error(f"Error communicating with MCP server: {e}")
             # Try to restart the process
-            await self.stop_mcp_server()
-            await self.start_mcp_server()
+            await self.stop_jenkins_mcp_enterprise()
+            await self.start_jenkins_mcp_enterprise()
             raise HTTPException(
                 status_code=500, detail=f"MCP server communication error: {e}"
             )
 
-    async def stop_mcp_server(self):
+    async def stop_jenkins_mcp_enterprise(self):
         """Stop the MCP server process"""
         if self.process:
             self.process.terminate()
@@ -102,15 +102,15 @@ class MCPStdioProxy:
 
 
 # Initialize proxy
-mcp_server_host = os.getenv("MCP_SERVER_HOST", "jenkins-mcp-enterprise-server")
+jenkins_mcp_enterprise_host = os.getenv("jenkins_mcp_enterprise_HOST", "jenkins_mcp_enterprise-server")
 mcp_command = [
     "docker",
     "exec",
     "-i",
-    mcp_server_host,
+    jenkins_mcp_enterprise_host,
     "python3",
     "-m",
-    "mcp_server.server",
+    "jenkins_mcp_enterprise.server",
 ]
 proxy = MCPStdioProxy(mcp_command)
 
@@ -118,19 +118,19 @@ proxy = MCPStdioProxy(mcp_command)
 @app.on_event("startup")
 async def startup_event():
     """Initialize MCP server on startup"""
-    await proxy.start_mcp_server()
+    await proxy.start_jenkins_mcp_enterprise()
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
     """Clean up MCP server on shutdown"""
-    await proxy.stop_mcp_server()
+    await proxy.stop_jenkins_mcp_enterprise()
 
 
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy", "service": "jenkins-mcp-enterprise-proxy"}
+    return {"status": "healthy", "service": "jenkins_mcp_enterprise-proxy"}
 
 
 @app.post("/mcp/initialize")
@@ -143,7 +143,7 @@ async def initialize():
                 "protocolVersion": "2024-11-05",
                 "capabilities": {"tools": {}, "resources": {}},
                 "clientInfo": {
-                    "name": "jenkins-mcp-enterprise-proxy",
+                    "name": "jenkins_mcp_enterprise-proxy",
                     "version": "1.0.0",
                 },
             },

@@ -2,11 +2,11 @@
 
 from typing import Any, Dict, List, Optional
 
-from mcp_server.base import Build
-from mcp_server.cache_manager import CacheManager
-from mcp_server.jenkins.jenkins_client import JenkinsClient
-from mcp_server.multi_jenkins_manager import MultiJenkinsManager
-from mcp_server.tools.base_tools import ParameterSpec
+from jenkins_mcp_enterprise.base import Build
+from jenkins_mcp_enterprise.cache_manager import CacheManager
+from jenkins_mcp_enterprise.jenkins.jenkins_client import JenkinsClient
+from jenkins_mcp_enterprise.multi_jenkins_manager import MultiJenkinsManager
+from jenkins_mcp_enterprise.tools.base_tools import ParameterSpec
 
 
 class JenkinsResolver:

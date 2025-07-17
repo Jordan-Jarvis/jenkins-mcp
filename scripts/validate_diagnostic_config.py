@@ -18,7 +18,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 try:
-    from mcp_server.diagnostic_config import (
+    from jenkins_mcp_enterprise.diagnostic_config import (
         get_diagnostic_config,
         reload_diagnostic_config,
     )
@@ -196,7 +196,7 @@ def find_config_files() -> List[Path]:
 
     # Default bundled
     bundled_config = (
-        project_root / "mcp_server" / "diagnostic_config" / "diagnostic-parameters.yml"
+        project_root / "jenkins_mcp_enterprise" / "diagnostic_config" / "diagnostic-parameters.yml"
     )
     if bundled_config.exists():
         config_files.append(bundled_config)

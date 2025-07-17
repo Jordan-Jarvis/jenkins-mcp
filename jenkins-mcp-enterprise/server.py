@@ -9,7 +9,7 @@ import yaml
 from mcp.server.fastmcp import FastMCP
 
 # Add an early stderr print to see if the script starts and stderr is captured.
-print("MCP_SERVER.PY: Script execution started.", file=sys.stderr)
+print("jenkins_mcp_enterprise.PY: Script execution started.", file=sys.stderr)
 sys.stderr.flush()
 
 from .config import (
@@ -376,6 +376,6 @@ def main():
 
 
 if __name__ == "__main__":
-    print("MCP_SERVER.PY: __main__ block entered.", file=sys.stderr)
+    print("jenkins_mcp_enterprise.PY: __main__ block entered.", file=sys.stderr)
     sys.stderr.flush()
     main()

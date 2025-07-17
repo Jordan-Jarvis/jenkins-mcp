@@ -43,13 +43,13 @@ jobs:
     
     - name: Test Docker build
       run: |
-        docker build -t jenkins-mcp-enterprise-test .
+        docker build -t jenkins_mcp_enterprise-test .
     
     - name: Validate package installation
       run: |
-        python -c "import mcp_server; print('✅ Package imports successfully')"
-        python -c "from mcp_server.server import main; print('✅ Server module imports successfully')"
-        python -c "from mcp_server.server import load_config_from_yaml; print('✅ Config loading function available')"
+        python -c "import jenkins_mcp_enterprise; print('✅ Package imports successfully')"
+        python -c "from jenkins_mcp_enterprise.server import main; print('✅ Server module imports successfully')"
+        python -c "from jenkins_mcp_enterprise.server import load_config_from_yaml; print('✅ Config loading function available')"
     
     - name: Test config file validation
       run: |
@@ -87,7 +87,7 @@ jobs:
         
         # Test that config loading works
         python -c "
-        from mcp_server.server import load_config_from_yaml
+        from jenkins_mcp_enterprise.server import load_config_from_yaml
         config = load_config_from_yaml('config/test-config.yml')
         print('✅ Config loaded successfully')
         print(f'✅ Jenkins URL: {config.jenkins.url if hasattr(config, \"jenkins\") and hasattr(config.jenkins, \"url\") else \"multi-instance config\"}')"
@@ -132,7 +132,7 @@ jobs:
     
     - name: Build Docker image
       run: |
-        docker build -t jenkins-mcp-enterprise-server .
+        docker build -t jenkins_mcp_enterprise-server .
     
     - name: Test Docker image runs
       run: |
@@ -141,7 +141,7 @@ jobs:
           -v $(pwd)/config:/app/config \
           -e DISABLE_VECTOR_SEARCH=true \
           -e LOG_LEVEL=WARNING \
-          jenkins-mcp-enterprise-server \
+          jenkins_mcp_enterprise-server \
           --config config/mcp-config.yml \
           echo '{"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {"protocolVersion": "2024-11-05", "capabilities": {}, "clientInfo": {"name": "Test", "version": "1.0"}}}' || \
           echo "Expected timeout after 10s - container started successfully"

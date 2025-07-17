@@ -59,7 +59,7 @@ def main():
     if args.coverage:
         cmd.extend(
             [
-                "--cov=mcp_server",
+                "--cov=jenkins_mcp_enterprise",
                 "--cov-report=html:test-results/coverage",
                 "--cov-report=term-missing",
                 "--cov-report=xml:test-results/coverage.xml",

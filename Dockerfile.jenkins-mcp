@@ -20,7 +20,7 @@ WORKDIR /app
 COPY requirements.txt ./
 COPY setup.py ./
 COPY README.md ./
-COPY mcp_server/ ./mcp_server/
+COPY jenkins_mcp_enterprise/ ./jenkins_mcp_enterprise/
 
 # Install the package
 RUN pip install -e .
@@ -33,7 +33,7 @@ RUN mkdir -p /tmp/mcp-jenkins
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD python3 -c "from mcp_server.multi_jenkins_manager import MultiJenkinsManager; m = MultiJenkinsManager(); print('OK')" || exit 1
+  CMD python3 -c "from jenkins_mcp_enterprise.multi_jenkins_manager import MultiJenkinsManager; m = MultiJenkinsManager(); print('OK')" || exit 1
 
 # Run the MCP server
-CMD ["python3", "-m", "mcp_server.server", "--transport", "stdio", "--config", "/app/config/mcp-config.yml"]
+CMD ["python3", "-m", "jenkins_mcp_enterprise.server", "--transport", "stdio", "--config", "/app/config/mcp-config.yml"]

@@ -13,17 +13,17 @@ class TestBasicValidation:
     def test_package_imports_successfully(self):
         """Test that core package imports work"""
         try:
-            import mcp_server
+            import jenkins_mcp_enterprise
 
-            assert mcp_server is not None
-            print("✅ mcp_server package imports successfully")
+            assert jenkins_mcp_enterprise is not None
+            print("✅ jenkins_mcp_enterprise package imports successfully")
         except ImportError as e:
-            pytest.fail(f"Failed to import mcp_server: {e}")
+            pytest.fail(f"Failed to import jenkins_mcp_enterprise: {e}")
 
     def test_server_module_imports(self):
         """Test that server module imports work"""
         try:
-            from mcp_server.server import create_server
+            from jenkins_mcp_enterprise.server import create_server
 
             assert create_server is not None
             print("✅ server module imports successfully")
@@ -33,7 +33,7 @@ class TestBasicValidation:
     def test_config_module_imports(self):
         """Test that config module imports work"""
         try:
-            from mcp_server.config import JenkinsConfig, ServerConfig, VectorConfig
+            from jenkins_mcp_enterprise.config import JenkinsConfig, ServerConfig, VectorConfig
 
             assert JenkinsConfig is not None
             assert VectorConfig is not None
@@ -67,9 +67,9 @@ class TestBasicValidation:
     def test_package_structure(self):
         """Test that expected package structure exists"""
         # Get the package root
-        import mcp_server
+        import jenkins_mcp_enterprise
 
-        package_path = Path(mcp_server.__file__).parent
+        package_path = Path(jenkins_mcp_enterprise.__file__).parent
 
         expected_modules = [
             "server.py",
@@ -92,9 +92,9 @@ class TestBasicValidation:
 
     def test_tools_directory_exists(self):
         """Test that tools directory exists with expected tools"""
-        import mcp_server
+        import jenkins_mcp_enterprise
 
-        package_path = Path(mcp_server.__file__).parent
+        package_path = Path(jenkins_mcp_enterprise.__file__).parent
         tools_path = package_path / "tools"
 
         assert tools_path.exists(), "tools directory should exist"
@@ -120,9 +120,9 @@ class TestBasicValidation:
 
     def test_diagnostic_config_exists(self):
         """Test that diagnostic configuration exists"""
-        import mcp_server
+        import jenkins_mcp_enterprise
 
-        package_path = Path(mcp_server.__file__).parent
+        package_path = Path(jenkins_mcp_enterprise.__file__).parent
         diagnostic_config_path = (
             package_path / "diagnostic_config" / "diagnostic-parameters.yml"
         )
@@ -134,10 +134,10 @@ class TestBasicValidation:
         """Test that version information is accessible"""
         try:
             # Try to get version from pyproject.toml or package
-            import mcp_server
+            import jenkins_mcp_enterprise
 
             # This should not fail with basic import
-            assert mcp_server is not None
+            assert jenkins_mcp_enterprise is not None
             print("✅ version info accessible")
         except Exception as e:
             pytest.fail(f"Failed to access version info: {e}")

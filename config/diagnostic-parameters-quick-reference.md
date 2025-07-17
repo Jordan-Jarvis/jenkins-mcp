@@ -12,7 +12,7 @@ export JENKINS_MCP_DIAGNOSTIC_CONFIG="/path/to/config.yml"
 config/diagnostic-parameters.yml
 
 # Default location
-mcp_server/diagnostic_config/diagnostic-parameters.yml
+jenkins_mcp_enterprise/diagnostic_config/diagnostic-parameters.yml
 ```
 
 ## Essential Parameters
@@ -170,7 +170,7 @@ build_processing:
 ## Hot Reload Configuration
 
 ```python
-from mcp_server.diagnostic_config import reload_diagnostic_config
+from jenkins_mcp_enterprise.diagnostic_config import reload_diagnostic_config
 reload_diagnostic_config()
 ```
 
@@ -181,7 +181,7 @@ reload_diagnostic_config()
 python3 -c "import yaml; yaml.safe_load(open('diagnostic-parameters.yml'))"
 
 # Load test
-python3 -c "from mcp_server.diagnostic_config import get_diagnostic_config; get_diagnostic_config()"
+python3 -c "from jenkins_mcp_enterprise.diagnostic_config import get_diagnostic_config; get_diagnostic_config()"
 ```
 
 For complete parameter documentation, see `diagnostic-parameters-guide.md`.

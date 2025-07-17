@@ -32,12 +32,12 @@ The system looks for configuration files in this priority order:
 
 1. **Environment Variable**: `JENKINS_MCP_DIAGNOSTIC_CONFIG=/path/to/config.yml`
 2. **User Override**: `config/diagnostic-parameters.yml` (in project root)
-3. **Bundled Default**: `mcp_server/diagnostic_config/diagnostic-parameters.yml`
+3. **Bundled Default**: `jenkins_mcp_enterprise/diagnostic_config/diagnostic-parameters.yml`
 
 ### Loading Configuration
 
 ```python
-from mcp_server.diagnostic_config import get_diagnostic_config
+from jenkins_mcp_enterprise.diagnostic_config import get_diagnostic_config
 
 config = get_diagnostic_config()
 # Configuration is automatically loaded and cached
@@ -1081,7 +1081,7 @@ print('✅ Configuration valid')
 
 # Test configuration loading
 python3 -c "
-from mcp_server.diagnostic_config import get_diagnostic_config
+from jenkins_mcp_enterprise.diagnostic_config import get_diagnostic_config
 config = get_diagnostic_config()
 print(f'✅ Loaded {len(config.get_semantic_search_queries())} search queries')
 "
@@ -1092,7 +1092,7 @@ print(f'✅ Loaded {len(config.get_semantic_search_queries())} search queries')
 Reload configuration without restarting the server:
 
 ```python
-from mcp_server.diagnostic_config import reload_diagnostic_config
+from jenkins_mcp_enterprise.diagnostic_config import reload_diagnostic_config
 
 # Reload configuration
 reload_diagnostic_config()

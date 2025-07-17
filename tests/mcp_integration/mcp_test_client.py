@@ -19,7 +19,7 @@ class MCPTestClient:
 
     def __init__(
         self,
-        server_script: str = "mcp_server.server",
+        server_script: str = "jenkins_mcp_enterprise.server",
         config: Optional[Dict[str, Any]] = None,
     ):
         self.server_script = server_script

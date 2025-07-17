@@ -59,7 +59,7 @@ class TestToolScenarios:
         """Test that all tools are properly exposed via MCP"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server.server", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise.server", config) as client:
             tools = await client.list_tools()
 
             # Verify we have the expected tools
@@ -90,7 +90,7 @@ class TestToolScenarios:
         """Test complete workflow: trigger → wait → get logs → analyze"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server.server", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise.server", config) as client:
             # 1. Get job parameters first
             params_result = await client.call_tool(
                 "get_jenkins_job_parameters", {"job_name": "sample-job"}
@@ -150,7 +150,7 @@ class TestToolScenarios:
         """Test failure diagnosis workflow"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server.server", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise.server", config) as client:
             # Diagnose the failed master  build
             diagnose_result = await client.call_tool(
                 "diagnose_build_failure",
@@ -184,7 +184,7 @@ class TestToolScenarios:
         """Test async build triggering"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server.server", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise.server", config) as client:
             result = await client.call_tool(
                 "trigger_build_async",
                 {"job_name": "sample-job", "params": {"BRANCH": "feature-branch"}},
@@ -202,7 +202,7 @@ class TestToolScenarios:
         """Test sub-build discovery and traversal"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server.server", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise.server", config) as client:
             result = await client.call_tool(
                 "trigger_build_with_subs",
                 {"parent_job_name": "QA_JOBS/master", "parent_build_number": 9},
@@ -234,7 +234,7 @@ class TestToolScenarios:
         """Test grep pattern search on logs"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server.server", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise.server", config) as client:
             # Search for compilation errors in failed build
             result = await client.call_tool(
                 "filter_errors_grep",
@@ -261,7 +261,7 @@ class TestToolScenarios:
     @pytest.mark.skip(reason="Requires real Jenkins instance")
     async def test_real_jenkins_connection(self, real_jenkins_config):
         """Test connection to real Jenkins instance"""
-        async with MCPTestClient("mcp_server.server", real_jenkins_config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise.server", real_jenkins_config) as client:
             # Test listing tools
             tools = await client.list_tools()
             assert len(tools) > 0
@@ -292,7 +292,7 @@ class TestToolScenarios:
         """Test that multiple tools can be called concurrently"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server.server", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise.server", config) as client:
             # Execute multiple tool calls concurrently
             tasks = [
                 client.call_tool(

@@ -39,7 +39,7 @@ class HTTPStreamingServer:
         self.config = config
         self.port = port
         self.host = host
-        self.mcp_server = None
+        self.jenkins_mcp_enterprise = None
         self.app = FastAPI(
             title="Jenkins MCP HTTP Streaming Server",
             description="MCP server with HTTP streaming transport support",
@@ -54,7 +54,7 @@ class HTTPStreamingServer:
         async def startup_event():
             """Initialize MCP server on startup"""
             logger.info("Starting Jenkins MCP HTTP Streaming Server...")
-            self.mcp_server = create_server(self.config)
+            self.jenkins_mcp_enterprise = create_server(self.config)
 
         @self.app.on_event("shutdown")
         async def shutdown_event():

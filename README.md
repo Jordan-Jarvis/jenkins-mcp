@@ -51,17 +51,17 @@ A production-ready Model Context Protocol (MCP) server that transforms how AI as
 **Option 1: Install from PyPI (Recommended)**
 ```bash
 # 1. Install the package
-pip install jenkins-mcp-enterprise
+pip install jenkins_mcp_enterprise
 
 # 2. Create configuration file
 mkdir -p config
-curl -o config/mcp-config.yml https://raw.githubusercontent.com/Jordan-Jarvis/jenkins-mcp-enterprise/main/config/mcp-config.example.yml
+curl -o config/mcp-config.yml https://raw.githubusercontent.com/Jordan-Jarvis/jenkins_mcp_enterprise/main/config/mcp-config.example.yml
 ```
 
 **Option 2: Install from Source**
 ```bash
 # 1. Clone and install
-git clone https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise-enterprise
+git clone https://github.com/Jordan-Jarvis/jenkins_mcp_enterprise-enterprise
 cd jenkins-mcp
 python3 -m pip install -e .
 
@@ -86,7 +86,7 @@ settings:
 EOF
 
 # 4. Launch the server
-jenkins-mcp-enterprise --config config/mcp-config.yml
+jenkins_mcp_enterprise --config config/mcp-config.yml
 ```
 
 ### 🎯 **Connect to Claude Desktop**
@@ -97,7 +97,7 @@ Add to `~/.claude_desktop_config.json`:
 {
   "mcpServers": {
     "jenkins": {
-      "command": "jenkins-mcp-enterprise",
+      "command": "jenkins_mcp_enterprise",
       "args": ["--config", "config/mcp-config.yml"]
     }
   }
@@ -349,10 +349,10 @@ All configuration is handled through YAML files - no environment variables neede
 cp config/mcp-config.example.yml config/mcp-config.yml
 
 # Launch with configuration
-python3 -m mcp_server.server --config config/mcp-config.yml
+python3 -m jenkins_mcp_enterprise.server --config config/mcp-config.yml
 
 # Custom diagnostic parameters (optional)
-cp mcp_server/diagnostic_config/diagnostic-parameters.yml config/diagnostic-parameters.yml
+cp jenkins_mcp_enterprise/diagnostic_config/diagnostic-parameters.yml config/diagnostic-parameters.yml
 # Edit config/diagnostic-parameters.yml as needed
 ```
 
@@ -385,13 +385,13 @@ cp mcp_server/diagnostic_config/diagnostic-parameters.yml config/diagnostic-para
 ### 🧪 **Examples**
 ```bash
 # Test the diagnostic engine with custom config
-python3 -m mcp_server.server --config config/mcp-config.yml
+python3 -m jenkins_mcp_enterprise.server --config config/mcp-config.yml
 
 # Validate your configuration syntax
 python3 -c "import yaml; yaml.safe_load(open('config/mcp-config.yml'))"
 
 # Test diagnostic parameters
-python3 -c "from mcp_server.diagnostic_config import get_diagnostic_config; get_diagnostic_config()"
+python3 -c "from jenkins_mcp_enterprise.diagnostic_config import get_diagnostic_config; get_diagnostic_config()"
 ```
 
 ## 🤝 **Contributing**
@@ -405,7 +405,7 @@ We welcome contributions! This project uses:
 
 ```bash
 # Development setup
-git clone https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise-enterprise
+git clone https://github.com/Jordan-Jarvis/jenkins_mcp_enterprise-enterprise
 cd jenkins-mcp
 python3 -m pip install -e .
 ./scripts/start_dev_environment.sh
@@ -445,7 +445,7 @@ GPL v3 License - build amazing things with Jenkins and AI!
 
 **🚀 Transform your Jenkins debugging experience today!**
 
-[⭐ Star this repo](https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise) • [📖 Read the docs](docs/) • [🐛 Report issues](https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise/issues) • [💬 Join discussions](https://github.com/Jordan-Jarvis/jenkins-mcp-enterprise/discussions) • [☕ Buy me a coffee](https://buymeacoffee.com/jordanmjaro)
+[⭐ Star this repo](https://github.com/Jordan-Jarvis/jenkins_mcp_enterprise) • [📖 Read the docs](docs/) • [🐛 Report issues](https://github.com/Jordan-Jarvis/jenkins_mcp_enterprise/issues) • [💬 Join discussions](https://github.com/Jordan-Jarvis/jenkins_mcp_enterprise/discussions) • [☕ Buy me a coffee](https://buymeacoffee.com/jordanmjaro)
 
 *Built with ❤️ for DevOps teams who demand more from their CI/CD tooling*
 

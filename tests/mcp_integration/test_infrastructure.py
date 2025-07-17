@@ -33,11 +33,11 @@ class TestInfrastructure:
         shutil.rmtree(cache_dir, ignore_errors=True)
 
     @pytest.mark.asyncio
-    async def test_mcp_server_startup(self, minimal_environment):
+    async def test_jenkins_mcp_enterprise_startup(self, minimal_environment):
         """Test that MCP server starts up correctly"""
         config = minimal_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Server should start without errors
             assert client.process is not None
             assert client.process.poll() is None  # Process should still be running
@@ -47,7 +47,7 @@ class TestInfrastructure:
         """Test MCP protocol compliance"""
         config = minimal_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Test tools/list endpoint
             tools = await client.list_tools()
 
@@ -70,7 +70,7 @@ class TestInfrastructure:
         """Test JSON-RPC format compliance"""
         config = minimal_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Test that responses follow JSON-RPC 2.0 format
             result = await client.call_tool(
                 "get_job_parameters", {"job_name": "any-job"}
@@ -94,7 +94,7 @@ class TestInfrastructure:
         """Test that error responses follow MCP format"""
         config = minimal_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Trigger an error by calling with invalid parameters
             result = await client.call_tool("trigger_build_async", {})
 
@@ -113,7 +113,7 @@ class TestInfrastructure:
         """Test that tool parameter validation works correctly"""
         config = minimal_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             tools = await client.list_tools()
 
             # Find a tool with required parameters
@@ -149,7 +149,7 @@ class TestInfrastructure:
         """Test that server handles concurrent requests correctly"""
         config = minimal_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Send multiple concurrent requests
             tasks = [
                 client.list_tools(),
@@ -174,7 +174,7 @@ class TestInfrastructure:
         """Test that server shuts down cleanly"""
         config = minimal_environment["config"]
 
-        client = MCPTestClient("mcp_server/server.py", config)
+        client = MCPTestClient("jenkins_mcp_enterprise/server.py", config)
 
         # Start server
         await client.start_server()
@@ -198,7 +198,7 @@ class TestInfrastructure:
         """Test that tool executions are properly isolated"""
         config = minimal_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Execute tools that might have side effects
             results = []
 
@@ -222,7 +222,7 @@ class TestInfrastructure:
         """Test handling of large responses"""
         config = minimal_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Request a potentially large response
             result = await client.call_tool(
                 "get_log_context",
@@ -246,7 +246,7 @@ class TestInfrastructure:
         """Test request timeout handling"""
         config = minimal_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Test with very short timeout
             try:
                 result = await client.call_tool(

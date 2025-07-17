@@ -21,7 +21,7 @@ COPY requirements.txt pyproject.toml ./
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Copy source code
-COPY mcp_server/ ./mcp_server/
+COPY jenkins_mcp_enterprise/ ./jenkins_mcp_enterprise/
 COPY tests/ ./tests/
 COPY scripts/ ./scripts/
 COPY README.md CLAUDE.md LICENSE ./
@@ -52,10 +52,10 @@ EXPOSE 8000
 # Health check - different for different transports
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD if [ "$MCP_TRANSPORT" = "stdio" ]; then \
-            python3 -c "import mcp_server.server; print('✅ MCP Server healthy')" || exit 1; \
+            python3 -c "import jenkins_mcp_enterprise.server; print('✅ MCP Server healthy')" || exit 1; \
         else \
             curl -f http://localhost:${MCP_PORT}/health || exit 1; \
         fi
 
 # Use shell form to allow environment variable expansion
-CMD python3 -m mcp_server.server --transport ${MCP_TRANSPORT} --port ${MCP_PORT} --host ${MCP_HOST}
+CMD python3 -m jenkins_mcp_enterprise.server --transport ${MCP_TRANSPORT} --port ${MCP_PORT} --host ${MCP_HOST}

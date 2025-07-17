@@ -57,7 +57,7 @@ class TestErrorScenarios:
             "log_level": "DEBUG",
         }
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             result = await client.call_tool(
                 "trigger_build_async", {"job_name": "any-job"}
             )
@@ -75,7 +75,7 @@ class TestErrorScenarios:
         """Test behavior with non-existent job"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             result = await client.call_tool(
                 "trigger_build_async", {"job_name": "non-existent-job"}
             )
@@ -90,7 +90,7 @@ class TestErrorScenarios:
         """Test behavior with non-existent build number"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             result = await client.call_tool(
                 "get_log_context", {"job_name": "sample-job", "build_number": 99999}
             )
@@ -105,7 +105,7 @@ class TestErrorScenarios:
         """Test parameter validation for missing required parameters"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Missing job_name parameter
             result = await client.call_tool("trigger_build_async", {})
 
@@ -118,7 +118,7 @@ class TestErrorScenarios:
         """Test parameter validation for incorrect types"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Invalid parameter type - build_number should be int, not string
             result = await client.call_tool(
                 "get_log_context",
@@ -138,7 +138,7 @@ class TestErrorScenarios:
         """Test parameter validation for invalid values"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Negative build number
             result = await client.call_tool(
                 "get_log_context", {"job_name": "sample-job", "build_number": -1}
@@ -155,7 +155,7 @@ class TestErrorScenarios:
         """Test behavior with unusually large parameter values"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Very large line range
             result = await client.call_tool(
                 "get_log_context",
@@ -181,7 +181,7 @@ class TestErrorScenarios:
         """Test that errors in one tool call don't affect others"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Run multiple calls - some good, some bad
             tasks = [
                 client.call_tool(
@@ -220,7 +220,7 @@ class TestErrorScenarios:
         """Test timeout scenarios"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Test very short timeout on a potentially slow operation
             try:
                 result = await client.call_tool(
@@ -241,7 +241,7 @@ class TestErrorScenarios:
         """Test behavior with malformed tool call parameters"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Test with None values
             result = await client.call_tool(
                 "get_log_context", {"job_name": None, "build_number": 1}
@@ -266,7 +266,7 @@ class TestErrorScenarios:
         # Stop the Qdrant test double to simulate connection failure
         test_environment["qdrant"].stop()
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Vector search should fail gracefully
             result = await client.call_tool(
                 "vector_search",
@@ -299,7 +299,7 @@ class TestErrorScenarios:
             "log_level": "DEBUG",
         }
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # This should either fail gracefully or handle the permission error
             result = await client.call_tool(
                 "get_log_context", {"job_name": "sample-job", "build_number": 1}
@@ -318,7 +318,7 @@ class TestErrorScenarios:
         """Test calling a non-existent tool"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             result = await client.call_tool(
                 "non_existent_tool", {"some_param": "some_value"}
             )
@@ -345,7 +345,7 @@ class TestErrorScenarios:
         }
 
         try:
-            async with MCPTestClient("mcp_server/server.py", config) as client:
+            async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
                 # Try to call any tool - server might not even start properly
                 result = await client.call_tool(
                     "trigger_build_async", {"job_name": "any-job"}
@@ -367,7 +367,7 @@ class TestErrorScenarios:
         """Test that partial failures don't break entire workflows"""
         config = test_environment["config"]
 
-        async with MCPTestClient("mcp_server/server.py", config) as client:
+        async with MCPTestClient("jenkins_mcp_enterprise/server.py", config) as client:
             # Diagnose a build where some operations might fail
             result = await client.call_tool(
                 "diagnose_build_failure",

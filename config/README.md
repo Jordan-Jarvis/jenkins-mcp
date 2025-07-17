@@ -90,24 +90,24 @@ Limited environment variables are supported for system-level configuration:
 
 ```bash
 # Validate configuration
-python -m mcp_server.cli validate --config config/mcp-config.yml
+python -m jenkins_mcp_enterprise.cli validate --config config/mcp-config.yml
 
 # Show configuration
-python -m mcp_server.cli show --config config/mcp-config.yml
+python -m jenkins_mcp_enterprise.cli show --config config/mcp-config.yml
 
 # Test connections
-python -m mcp_server.cli test --config config/mcp-config.yml
+python -m jenkins_mcp_enterprise.cli test --config config/mcp-config.yml
 ```
 
 ### Creating Your Own Configuration
 
 ```bash
 # Create a new example configuration file
-python -m mcp_server.cli create-example --output config/mcp-config.yml
+python -m jenkins_mcp_enterprise.cli create-example --output config/mcp-config.yml
 
 # Edit the file with your settings
 # Then validate it
-python -m mcp_server.cli validate --config config/mcp-config.yml
+python -m jenkins_mcp_enterprise.cli validate --config config/mcp-config.yml
 ```
 
 ## Configuration Priority

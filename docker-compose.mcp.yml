@@ -4,7 +4,7 @@ services:
   # Qdrant Vector Database
   qdrant:
     image: qdrant/qdrant:latest
-    container_name: jenkins-mcp-enterprise-qdrant
+    container_name: jenkins_mcp_enterprise-qdrant
     ports:
       - "6333:6333"
       - "6334:6334"
@@ -21,11 +21,11 @@ services:
     restart: unless-stopped
 
   # Jenkins MCP Enterprise Server
-  jenkins-mcp-enterprise-server:
+  jenkins_mcp_enterprise-server:
     build:
       context: .
-      dockerfile: Dockerfile.jenkins-mcp-enterprise
-    container_name: jenkins-mcp-enterprise-server
+      dockerfile: Dockerfile.jenkins_mcp_enterprise
+    container_name: jenkins_mcp_enterprise-server
     depends_on:
       qdrant:
         condition: service_healthy
@@ -40,7 +40,7 @@ services:
     tty: true
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python3", "-c", "from mcp_server.multi_jenkins_manager import MultiJenkinsManager; print('OK')"]
+      test: ["CMD", "python3", "-c", "from jenkins_mcp_enterprise.multi_jenkins_manager import MultiJenkinsManager; print('OK')"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -51,9 +51,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.mcp-proxy
-    container_name: jenkins-mcp-enterprise-proxy
+    container_name: jenkins_mcp_enterprise-proxy
     depends_on:
-      jenkins-mcp-enterprise-server:
+      jenkins_mcp_enterprise-server:
         condition: service_healthy
     ports:
       - "3006:3006"
@@ -77,4 +77,4 @@ volumes:
 
 networks:
   default:
-    name: jenkins-mcp-enterprise-network
+    name: jenkins_mcp_enterprise-network

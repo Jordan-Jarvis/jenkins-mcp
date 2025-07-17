@@ -21,12 +21,12 @@ python3 -m pytest tests/test_basic_validation.py -v --tb=short
 echo "✅ Basic validation tests passed"
 
 echo "🏗️ Step 3: Test Docker build"
-docker build -t jenkins-mcp-enterprise-test . > /dev/null 2>&1
+docker build -t jenkins_mcp_enterprise-test . > /dev/null 2>&1
 echo "✅ Docker build successful"
 
 echo "📋 Step 4: Validate package installation"
-python3 -c "import mcp_server; print('✅ Package imports successfully')"
-python3 -c "from mcp_server.server import main; print('✅ Server module imports successfully')" > /dev/null 2>&1
+python3 -c "import jenkins_mcp_enterprise; print('✅ Package imports successfully')"
+python3 -c "from jenkins_mcp_enterprise.server import main; print('✅ Server module imports successfully')" > /dev/null 2>&1
 
 echo "🎯 Step 5: Run framework design validation"
 python3 -m pytest tests/mcp_integration/test_simple_validation.py::TestSimpleValidation::test_framework_design_principles \

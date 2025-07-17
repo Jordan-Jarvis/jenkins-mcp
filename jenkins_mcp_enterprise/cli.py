@@ -197,19 +197,19 @@ def main():
         epilog="""
 Examples:
   # Validate configuration from environment variables
-  python -m mcp_server.cli validate
+  python -m jenkins_mcp_enterprise.cli validate
   
   # Validate configuration from file
-  python -m mcp_server.cli validate --config config.json
+  python -m jenkins_mcp_enterprise.cli validate --config config.json
   
   # Show current configuration
-  python -m mcp_server.cli show --config config.json
+  python -m jenkins_mcp_enterprise.cli show --config config.json
   
   # Test connections to external services
-  python -m mcp_server.cli test --config config.json
+  python -m jenkins_mcp_enterprise.cli test --config config.json
   
   # Create example configuration file
-  python -m mcp_server.cli create-example --output config.json
+  python -m jenkins_mcp_enterprise.cli create-example --output config.json
         """,
     )
 
