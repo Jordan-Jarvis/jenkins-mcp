@@ -1,12 +1,12 @@
 {
   "mcpServers": {
-    "jenkins-mcp-enterprise": {
+    "jenkins_mcp_enterprise": {
       "command": "python3",
       "args": [
         "-m", 
-        "mcp_server.server",
+        "jenkins_mcp_enterprise.server",
         "--config",
-        "/Users/JordanJarvis/Documents/ai/jenkins-mcp-enterprise/config/mcp-config.yml"
+        "jenkins_mcp_enterprise/config/mcp-config.yml"
       ]
     }
   }

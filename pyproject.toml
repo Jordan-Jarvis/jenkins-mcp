@@ -55,8 +55,9 @@ dev = [
     "pytest-cov>=4.1.0"
 ]
 
-[tool.setuptools]
-packages = ["jenkins_mcp_enterprise"]
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["jenkins_mcp_enterprise*"]
 
 [tool.setuptools.package-data]
 jenkins_mcp_enterprise = ["diagnostic_config/diagnostic-parameters.yml"]
