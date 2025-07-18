@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/jordan-jarvis-jenkins-mcp-enterprise-badge.png)](https://mseep.ai/app/jordan-jarvis-jenkins-mcp-enterprise)
+
 # 🚀 Jenkins MCP Server Pro
 
 > **The most advanced Jenkins MCP server available** - Built for enterprise debugging, multi-instance management, and AI-powered failure analysis.
